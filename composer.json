@@ -1,0 +1,35 @@
+{
+    "name": "aop/lalr",
+    "description": "Lexing and parsing in pure PHP using LALR(1) parser",
+    "keywords": ["lexing", "parsing", "ast", "parser"],
+    "homepage": "https://github.com/php-aop/lalr",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Jakub Lédl",
+            "email": "jakubledl@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=7.1"
+    },
+    "require-dev": {
+        "symfony/console": "~2.1"
+    },
+    "suggest": {
+        "symfony/console": "for the command-line tool"
+    },
+    
+    "bin": ["bin/dissect.php", "bin/dissect"],
+    "autoload": {
+        "files": [
+            "src/Functions/is_diff.php",
+            "src/Functions/substring.php",
+            "src/Functions/union.php",
+            "src/Functions/utf8_strlen.php"
+        ],
+        "psr-4": {
+            "Aop\\LALR\\": "src/"
+        }
+    }
+}
