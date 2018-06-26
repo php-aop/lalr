@@ -19,7 +19,7 @@ final class ExportParseTableCommand extends Command
     protected function configure()
     {
         $this
-            ->setName('aop:lalr:export')
+            ->setName('lalr:export')
             ->addArgument('grammar-class', InputArgument::REQUIRED, 'The grammar class.')
             ->addOption('output-dir', 'o', InputOption::VALUE_REQUIRED, 'Overrides the default output directory.')
             ->addOption('debug', 'd', InputOption::VALUE_NONE, 'Writes the parse table in the debug format.')

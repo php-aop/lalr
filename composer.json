@@ -14,13 +14,14 @@
         "php": ">=7.1"
     },
     "require-dev": {
-        "symfony/console": "~2.1"
+        "symfony/console": "^3.0|^4.0",
+        "phpunit/phpunit": "^7.0"
     },
     "suggest": {
         "symfony/console": "for the command-line tool"
     },
     
-    "bin": ["bin/dissect.php", "bin/dissect"],
+    "bin": ["bin/lalr.php", "bin/lalr"],
     "autoload": {
         "files": [
             "src/Functions/is_diff.php",
