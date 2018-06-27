@@ -12,7 +12,7 @@ use Aop\LALR\Lexer\TokenInterface;
  * SimpleLexer uses specified recognizers
  * without keeping track of state.
  */
-final class SimpleLexer extends AbstractLexer
+class SimpleLexer extends AbstractLexer
 {
     /**
      * @var array

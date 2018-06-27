@@ -13,7 +13,7 @@ use Aop\LALR\Lexer\TokenInterface;
  * The StatefulLexer works like SimpleLexer,
  * but internally keeps notion of current lexer state.
  */
-final class StatefulLexer extends AbstractLexer
+class StatefulLexer extends AbstractLexer
 {
     /**
      * Signifies that no action should be taken on encountering a token.
