@@ -81,13 +81,17 @@ final class SimpleLexer extends AbstractLexer
     /**
      * {@inheritDoc}
      */
-    protected function extractToken(string $string): TokenInterface
+    protected function extractToken(string $string): ?TokenInterface
     {
         $value = $type = null;
 
         foreach ($this->recognizers as $t => $recognizer) {
 
             $v = null;
+
+            if (null === $string) {
+                continue;
+            }
 
             if ($recognizer->match($string, $v)) {
                 if ($value === null || utf8_strlen($v) > utf8_strlen($value)) {

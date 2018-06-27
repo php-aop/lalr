@@ -28,11 +28,11 @@ final class RegexRecognizer implements RecognizerInterface
     /**
      * {@inheritdoc}
      */
-    public function match(string $string, string &$result): bool
+    public function match(string $string, &$result): bool
     {
-        $r = preg_match($this->regex, $string, $match, PREG_OFFSET_CAPTURE);
+        $matches = \preg_match($this->regex, $string, $match, PREG_OFFSET_CAPTURE);
 
-        if ($r === 1 && $match[0][1] === 0) {
+        if (1 === $matches && 0 === $match[0][1]) {
             $result = $match[0][0];
 
             return true;

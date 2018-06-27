@@ -8,6 +8,7 @@ use Aop\LALR\Lexer\Token;
 use Aop\LALR\Lexer\TokenInterface;
 use Aop\LALR\Lexer\TokenStream\ArrayTokenStream;
 use Aop\LALR\Lexer\TokenStreamInterface;
+use Aop\LALR\Parser\LALR1\Parser;
 
 use function Aop\LALR\Functions\utf8_strlen;
 use function Aop\LALR\Functions\substring;
@@ -27,10 +28,10 @@ abstract class AbstractLexer implements LexerInterface
      */
     public function lex(string $string): TokenStreamInterface
     {
-        $string = strtr($string, array("\r\n" => "\n", "\r" => "\n"));
+        $string = strtr($string, ["\r\n" => "\n", "\r" => "\n"]);
 
-        $tokens = array();
-        $position = 0;
+        $tokens         = [];
+        $position       = 0;
         $originalString = $string;
         $originalLength = utf8_strlen($string);
 
@@ -57,9 +58,10 @@ abstract class AbstractLexer implements LexerInterface
         }
 
         if ($position !== $originalLength) {
-            $lines = explode("\n", $originalString);
-            $errorLine = $lines[$this->line-1];
+            $lines        = explode("\n", $originalString);
+            $errorLine    = $lines[$this->line - 1];
             $linePosition = strpos($errorLine, $string);
+
             throw new RecognitionException($string, $linePosition, $this->line);
         }
 

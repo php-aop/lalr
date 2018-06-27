@@ -32,5 +32,10 @@
         "psr-4": {
             "Aop\\LALR\\": "src/"
         }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Aop\\LALR\\Tests\\": "tests/"
+        }
     }
 }

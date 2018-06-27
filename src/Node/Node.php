@@ -121,7 +121,7 @@ final class Node implements NodeInterface
 
     public function count(): int
     {
-        return count($this->nodes);
+        return \count($this->nodes);
     }
 
     public function getIterator(): \Traversable

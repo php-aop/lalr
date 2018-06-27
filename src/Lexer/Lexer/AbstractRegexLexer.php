@@ -6,6 +6,7 @@ use Aop\LALR\Lexer\LexerInterface;
 use Aop\LALR\Lexer\Token;
 use Aop\LALR\Lexer\TokenStream\ArrayTokenStream;
 use Aop\LALR\Lexer\TokenStreamInterface;
+use Aop\LALR\Parser\LALR1\Parser;
 
 abstract class AbstractRegexLexer implements LexerInterface
 {
@@ -16,17 +17,18 @@ abstract class AbstractRegexLexer implements LexerInterface
     {
         static $regex;
 
-        if (!isset($regex)) {
-            $regex = '/(' . implode(')|(', $this->getCatchablePatterns()) . ')|'
-                . implode('|', $this->getNonCatchablePatterns()) . '/i';
+        if (null === $regex) {
+            $catchablePatterns    = implode(')|(', $this->getCatchablePatterns());
+            $nonCatchablePatterns = implode('|', $this->getNonCatchablePatterns());
+            $regex                = sprintf('/(%s)|%s/i', $catchablePatterns, $nonCatchablePatterns);
         }
 
-        $string = strtr($string, array("\r\n" => "\n", "\r" => "\n"));
+        $string = strtr($string, ["\r\n" => "\n", "\r" => "\n"]);
 
-        $flags = PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_OFFSET_CAPTURE;
-        $matches = preg_split($regex, $string, -1, $flags);
-        $tokens = array();
-        $line = 1;
+        $flags       = PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_OFFSET_CAPTURE;
+        $matches     = preg_split($regex, $string, -1, $flags);
+        $tokens      = [];
+        $line        = 1;
         $oldPosition = 0;
 
         foreach ($matches as $match) {

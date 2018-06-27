@@ -53,7 +53,7 @@ final class ArrayTokenStream implements TokenStreamInterface
             return $this->tokens[$this->position + $n];
         }
 
-        throw new OutOfBoundsException('Invalid look-ahead position "%d", there are only "%d" tokens in stream.', $n, count($this->tokens));
+        throw new OutOfBoundsException(sprintf('Invalid look-ahead position "%d", there are only "%d" tokens in stream.', $n, count($this->tokens)));
     }
 
     /**
@@ -65,7 +65,7 @@ final class ArrayTokenStream implements TokenStreamInterface
             return $this->tokens[$n];
         }
 
-        throw new OutOfBoundsException('Invalid index "%d", there are only "%d" tokens in stream.', $n, count($this->tokens));
+        throw new OutOfBoundsException(sprintf('Invalid index "%d", there are only "%d" tokens in stream.', $n, count($this->tokens)));
 
     }
 
@@ -75,7 +75,7 @@ final class ArrayTokenStream implements TokenStreamInterface
     public function move(int $n): void
     {
         if (!isset($this->tokens[$n])) {
-            throw new OutOfBoundsException('Invalid index "%d" to move on, there are only "%d" tokens in stream.', $n, count($this->tokens));
+            throw new OutOfBoundsException(sprintf('Invalid index "%d" to move on, there are only "%d" tokens in stream.', $n, count($this->tokens)));
         }
 
         $this->position = $n;
@@ -87,7 +87,7 @@ final class ArrayTokenStream implements TokenStreamInterface
     public function seek(int $n): void
     {
         if (!isset($this->tokens[$this->position + $n])) {
-            throw new OutOfBoundsException('Invalid index "%d" to seek, there are only "%d" tokens in stream.', $this->position + $n, count($this->tokens));
+            throw new OutOfBoundsException(sprintf('Invalid index "%d" to seek, there are only "%d" tokens in stream.', $this->position + $n, count($this->tokens)));
         }
 
         $this->position += $n;
@@ -99,7 +99,7 @@ final class ArrayTokenStream implements TokenStreamInterface
     public function next(): void
     {
         if (!isset($this->tokens[$this->position + 1])) {
-            throw new OutOfBoundsException('Attempting to move beyond the end of the stream, there are only "%d" tokens in stream.', count($this->tokens));
+            throw new OutOfBoundsException(sprintf('Attempting to move beyond the end of the stream, there are only "%d" tokens in stream.', count($this->tokens)));
         }
 
         $this->position++;

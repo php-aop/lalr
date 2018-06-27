@@ -18,13 +18,13 @@ final class StatefulLexer extends AbstractLexer
     /**
      * Signifies that no action should be taken on encountering a token.
      */
-    private const NO_ACTION = 0;
+    public const NO_ACTION = 0;
 
     /**
      * Indicates that a state should be popped of the state stack on
      * encountering a token.
      */
-    private const POP_STATE = 1;
+    public const POP_STATE = 1;
 
     /**
      * @var array
@@ -190,6 +190,10 @@ final class StatefulLexer extends AbstractLexer
          */
         foreach ($state['recognizers'] as $t => $recognizer) {
 
+            if (null === $string) {
+                continue;
+            }
+
             $v = null;
 
             if ($recognizer->match($string, $v)) {
@@ -204,12 +208,12 @@ final class StatefulLexer extends AbstractLexer
 
         if ($type !== null) {
 
-            if (is_string($action)) { // enter new state
+            if (\is_string($action)) { // enter new state
                 $this->stateStack[] = $action;
             }
 
             if ($action === self::POP_STATE) {
-                array_pop($this->stateStack);
+                \array_pop($this->stateStack);
             }
 
             return new Token($type, $value, $this->getCurrentLine());
