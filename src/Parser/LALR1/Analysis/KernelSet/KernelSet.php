@@ -2,7 +2,6 @@
 
 namespace Aop\LALR\Parser\LALR1\Analysis\KernelSet;
 
-
 /**
  * A BST implementation for more efficient lookup
  * of states by their kernel items.
