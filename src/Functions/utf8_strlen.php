@@ -9,6 +9,7 @@ namespace Aop\LALR\Functions;
  *
  * @return int The length.
  */
-function utf8_strlen(string  $str): int {
-    return strlen(utf8_decode($str));
+function utf8_strlen(string $str): int
+{
+    return \strlen(\utf8_decode($str));
 }

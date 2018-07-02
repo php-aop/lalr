@@ -24,7 +24,7 @@
     "bin": ["bin/lalr.php", "bin/lalr"],
     "autoload": {
         "files": [
-            "src/Functions/is_diff.php",
+            "src/Functions/has_diff.php",
             "src/Functions/substring.php",
             "src/Functions/union.php",
             "src/Functions/utf8_strlen.php"

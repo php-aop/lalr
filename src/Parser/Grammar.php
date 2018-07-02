@@ -311,7 +311,7 @@ class Grammar
     }
 
     /**
-     * Marks the current group of operators as nonassociative.
+     * Marks the current group of operators as non-associative.
      *
      * @return \Aop\LALR\Parser\Grammar This instance for fluent interface.
      */

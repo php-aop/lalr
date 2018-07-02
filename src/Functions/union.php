@@ -9,6 +9,7 @@ namespace Aop\LALR\Functions;
  *
  * @return array The union of given sets.
  */
-function union(): array {
+function union(): array
+{
     return array_unique(call_user_func_array('array_merge', func_get_args()));
 }

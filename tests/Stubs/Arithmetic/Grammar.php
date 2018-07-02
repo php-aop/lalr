@@ -60,11 +60,11 @@ final class Grammar extends Base
 
             ->is('Expr', '**', 'Expr')
             ->call(function ($l, $_, $r) {
-                return pow($l, $r);
+                return $l ** $r;
             })
 
             ->is('(', 'Expr', ')')
-            ->call(function ($_0, $e, $_1) {
+            ->call(function ($_0, $e) {
                 return $e;
             })
 

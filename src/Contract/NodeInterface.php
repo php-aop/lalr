@@ -1,6 +1,8 @@
 <?php
 
-namespace Aop\LALR\Node;
+declare(strict_types=1);
+
+namespace Aop\LALR\Contract;
 
 /**
  * A basic contract for a node in an AST.
@@ -28,7 +30,7 @@ interface NodeInterface extends \IteratorAggregate, \Countable
      *
      * @param int|string $name The name of the node.
      *
-     * @return \Aop\LALR\Node\NodeInterface The child node specified by $name.
+     * @return \Aop\LALR\Contract\NodeInterface The child node specified by $name.
      *
      * @throws \Aop\LALR\Exception\RuntimeException When no child node named $name exists.
      */
@@ -37,8 +39,8 @@ interface NodeInterface extends \IteratorAggregate, \Countable
     /**
      * Sets a child node.
      *
-     * @param string $name The name.
-     * @param \Aop\LALR\Node\NodeInterface $node The new child node.
+     * @param string $name                       The name.
+     * @param \Aop\LALR\Contract\NodeInterface $child The new child node.
      */
     public function setNode(string $name, NodeInterface $child): void;
 
@@ -80,7 +82,7 @@ interface NodeInterface extends \IteratorAggregate, \Countable
     /**
      * Sets an attribute by key.
      *
-     * @param string $key The key.
+     * @param string $key  The key.
      * @param mixed $value The new value.
      */
     public function setAttribute(string $key, $value): void;

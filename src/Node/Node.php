@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Aop\LALR\Node;
 
+use Aop\LALR\Contract\NodeInterface;
 use Aop\LALR\Exception\RuntimeException;
 
 /**
@@ -12,23 +15,31 @@ final class Node implements NodeInterface
     /**
      * @var array
      */
-    protected $nodes;
+    private $nodes;
 
     /**
      * @var array
      */
-    protected $attributes;
+    private $attributes;
 
     /**
      * Constructor.
      *
-     * @param array $attributes The attributes of this node.
-     * @param array $nodes      The children of this node.
+     * @param array $attributes            The attributes of this node.
+     * @param NodeInterface[]|array $nodes The children of this node.
      */
     public function __construct(array $attributes = [], array $nodes = [])
     {
-        $this->attributes = $attributes;
-        $this->nodes      = $nodes;
+        $this->attributes = [];
+        $this->nodes      = [];
+
+        foreach ($nodes as $key => $value) {
+            $this->setNode($key, $value);
+        }
+
+        foreach ($attributes as $key => $value) {
+            $this->setAttribute($key, $value);
+        }
     }
 
     /**
@@ -119,11 +130,17 @@ final class Node implements NodeInterface
         unset($this->attributes[$key]);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function count(): int
     {
         return \count($this->nodes);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getIterator(): \Traversable
     {
         return new \ArrayIterator($this->nodes);

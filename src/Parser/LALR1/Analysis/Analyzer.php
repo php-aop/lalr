@@ -8,7 +8,7 @@ use Aop\LALR\Parser\Grammar;
 use Aop\LALR\Parser\LALR1\Analysis\KernelSet\KernelSet;
 use Aop\LALR\Parser\LALR1\Parser;
 
-use function Aop\LALR\Functions\is_diff;
+use function Aop\LALR\Functions\has_diff;
 use function Aop\LALR\Functions\union;
 
 /**
@@ -20,9 +20,9 @@ final class Analyzer
     /**
      * Performs a grammar analysis.
      *
-     * @param \Dissect\Parser\Grammar $grammar The grammar to analyse.
+     * @param \Aop\LALR\Parser\Grammar $grammar The grammar to analyse.
      *
-     * @return \Dissect\Parser\LALR1\Analysis\AnalysisResult The result ofthe analysis.
+     * @return \Aop\LALR\Parser\LALR1\Analysis\AnalysisResult The result ofthe analysis.
      */
     public function analyze(Grammar $grammar)
     {
@@ -35,9 +35,9 @@ final class Analyzer
     /**
      * Builds the handle-finding FSA from the grammar.
      *
-     * @param \Dissect\Parser\Grammar $grammar The grammar.
+     * @param \Aop\LALR\Parser\Grammar $grammar The grammar.
      *
-     * @return \Dissect\Parser\LALR1\Analysis\Automaton The resulting automaton.
+     * @return \Aop\LALR\Parser\LALR1\Analysis\Automaton The resulting automaton.
      */
     protected function buildAutomaton(Grammar $grammar)
     {
@@ -421,6 +421,7 @@ final class Analyzer
                                     } else {
                                         // new rule was earlier
                                         $table['action'][$num][$token] = -$ruleNumber;
+                                        $resolvedRules = array($newRule, $originalRule);
 
                                         $conflicts[] = array(
                                             'state' => $num,
@@ -428,7 +429,6 @@ final class Analyzer
                                             'rules' => $resolvedRules,
                                             'resolution' => Grammar::EARLIER_REDUCE,
                                         );
-                                        $resolvedRules = array($newRule, $originalRule);
 
                                         continue;
                                     }
@@ -515,7 +515,7 @@ final class Analyzer
                         }
                     }
 
-                    if (is_diff($new, $firstSets[$lhs])) {
+                    if (has_diff($new, $firstSets[$lhs])) {
                         $firstSets[$lhs] = union($firstSets[$lhs], $new);
 
                         $changes = true;
