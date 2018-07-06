@@ -60,4 +60,34 @@ final class NodeTest extends TestCase
     {
         $this->node->getNode('middle');
     }
+
+    /**
+     * @test
+     */
+    public function setAndRemoveNode(): void
+    {
+        $this->assertFalse($this->node->hasNode('test'));
+        $this->node->setNode('test', new Node());
+        $this->assertTrue($this->node->hasNode('test'));
+        $this->node->removeNode('test');
+        $this->assertFalse($this->node->hasNode('test'));
+    }
+
+    /**
+     * @test
+     */
+    public function getAttributeReturnsAttribute(): void
+    {
+        $this->assertEquals(1, $this->node->getAttribute('attr_1'));
+        $this->assertEquals(2, $this->node->getAttribute('attr_2'));
+    }
+
+    /**
+     * @test
+     * @expectedException \Aop\LALR\Exception\RuntimeException
+     */
+    public function getAttributeThrowsExceptionIfThereIsNoAttribute(): void
+    {
+        $this->node->getAttribute('not_existing');
+    }
 }
