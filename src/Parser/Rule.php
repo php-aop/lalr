@@ -10,7 +10,7 @@ final class Rule
     /**
      * @var int
      */
-    private  $number;
+    private $number;
 
     /**
      * @var string
@@ -126,7 +126,7 @@ final class Rule
      *
      * @param int|null $precedence Precedence.
      */
-    public function setPrecedence(?int $precedence)
+    public function setPrecedence(?int $precedence): void
     {
         $this->precedence = $precedence;
     }

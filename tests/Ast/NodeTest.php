@@ -1,9 +1,9 @@
 <?php
 
-namespace Aop\LALR\Tests\Node;
+namespace Aop\LALR\Tests\Ast;
 
 use Aop\LALR\Contract\NodeInterface;
-use Aop\LALR\Node\Node;
+use Aop\LALR\Tests\Stubs\Ast\Node;
 use PHPUnit\Framework\TestCase;
 
 final class NodeTest extends TestCase
@@ -89,5 +89,17 @@ final class NodeTest extends TestCase
     public function getAttributeThrowsExceptionIfThereIsNoAttribute(): void
     {
         $this->node->getAttribute('not_existing');
+    }
+
+    /**
+     * @test
+     */
+    public function setAndRemoveAttribute(): void
+    {
+        $this->assertFalse($this->node->hasAttribute('test'));
+        $this->node->setAttribute('test', 10);
+        $this->assertTrue($this->node->hasAttribute('test'));
+        $this->node->removeAttribute('test');
+        $this->assertFalse($this->node->hasAttribute('test'));
     }
 }

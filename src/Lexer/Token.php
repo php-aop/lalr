@@ -1,6 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Aop\LALR\Lexer;
+
+use Aop\LALR\Contract\TokenInterface;
 
 /**
  * A simple token representation.
@@ -8,7 +12,7 @@ namespace Aop\LALR\Lexer;
 final class Token implements TokenInterface
 {
     /**
-     * @var mixed
+     * @var string
      */
     private $type;
 
@@ -25,11 +29,11 @@ final class Token implements TokenInterface
     /**
      * Constructor.
      *
-     * @param mixed $type   The type of the token.
+     * @param string $type  The type of the token.
      * @param string $value The token value.
      * @param int $line     The line.
      */
-    public function __construct($type, string $value, int $line)
+    public function __construct(string $type, string $value, int $line)
     {
         $this->type  = $type;
         $this->value = $value;
@@ -39,7 +43,7 @@ final class Token implements TokenInterface
     /**
      * {@inheritDoc}
      */
-    public function getType()
+    public function getType(): string
     {
         return $this->type;
     }

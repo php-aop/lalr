@@ -5,9 +5,9 @@ namespace Aop\LALR\Lexer\Lexer;
 use Aop\LALR\Exception\RecognitionException;
 use Aop\LALR\Lexer\LexerInterface;
 use Aop\LALR\Lexer\Token;
-use Aop\LALR\Lexer\TokenInterface;
-use Aop\LALR\Lexer\TokenStream\ArrayTokenStream;
-use Aop\LALR\Lexer\TokenStreamInterface;
+use Aop\LALR\Contract\TokenInterface;
+use Aop\LALR\Lexer\TokenStream;
+use Aop\LALR\Contract\TokenStreamInterface;
 use Aop\LALR\Parser\LALR1\Parser;
 
 use function Aop\LALR\Functions\utf8_strlen;
@@ -67,7 +67,7 @@ abstract class AbstractLexer implements LexerInterface
 
         $tokens[] = new Token(Parser::EOF_TOKEN_TYPE, '', $this->line);
 
-        return new ArrayTokenStream($tokens);
+        return new TokenStream($tokens);
     }
 
     /**
@@ -86,14 +86,14 @@ abstract class AbstractLexer implements LexerInterface
      *
      * @param string $string The string to extract the token from.
      *
-     * @return \Aop\LALR\Lexer\TokenInterface|null The extracted token or null.
+     * @return \Aop\LALR\Contract\TokenInterface|null The extracted token or null.
      */
     abstract protected function extractToken(string $string): ?TokenInterface;
 
     /**
      * Should given token be skipped?
      *
-     * @param \Aop\LALR\Lexer\TokenInterface $token The token to evaluate.
+     * @param \Aop\LALR\Contract\TokenInterface $token The token to evaluate.
      *
      * @return boolean Whether to skip the token.
      */

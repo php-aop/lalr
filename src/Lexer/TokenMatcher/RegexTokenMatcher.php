@@ -1,19 +1,20 @@
 <?php
 
-namespace Aop\LALR\Lexer\Recognizer;
+declare(strict_types=1);
 
-use Aop\LALR\Lexer\RecognizerInterface;
+namespace Aop\LALR\Lexer\TokenMatcher;
+
+use Aop\LALR\Contract\TokenMatcherInterface;
 
 /**
- * The RegexRecognizer matches a string using a
- * regular expression.
+ * Matches a string using a regular expression.
  */
-final class RegexRecognizer implements RecognizerInterface
+final class RegexTokenMatcher implements TokenMatcherInterface
 {
     /**
      * @var string
      */
-    protected $regex;
+    private $regex;
 
     /**
      * Constructor.

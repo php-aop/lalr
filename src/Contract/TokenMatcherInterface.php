@@ -1,8 +1,10 @@
 <?php
 
-namespace Aop\LALR\Lexer;
+declare(strict_types=1);
 
-interface RecognizerInterface
+namespace Aop\LALR\Contract;
+
+interface TokenMatcherInterface
 {
     /**
      * Returns a boolean value specifying whether

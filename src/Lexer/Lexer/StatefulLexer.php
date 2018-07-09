@@ -4,10 +4,10 @@ namespace Aop\LALR\Lexer\Lexer;
 
 use Aop\LALR\Exception\LogicException;
 use function Aop\LALR\Functions\utf8_strlen;
-use Aop\LALR\Lexer\Recognizer\RegexRecognizer;
-use Aop\LALR\Lexer\Recognizer\SimpleRecognizer;
+use Aop\LALR\Lexer\TokenMatcher\RegexTokenMatcher;
+use Aop\LALR\Lexer\TokenMatcher\StringTokenMatcher;
 use Aop\LALR\Lexer\Token;
-use Aop\LALR\Lexer\TokenInterface;
+use Aop\LALR\Contract\TokenInterface;
 
 /**
  * The StatefulLexer works like SimpleLexer,
@@ -66,7 +66,7 @@ class StatefulLexer extends AbstractLexer
             $value = $type;
         }
 
-        $this->states[$this->stateBeingBuilt]['recognizers'][$type] = new SimpleRecognizer($value);
+        $this->states[$this->stateBeingBuilt]['recognizers'][$type] = new StringTokenMatcher($value);
         $this->states[$this->stateBeingBuilt]['actions'][$type]     = self::NO_ACTION;
         $this->typeBeingBuilt                                       = $type;
 
@@ -87,7 +87,7 @@ class StatefulLexer extends AbstractLexer
             throw new LogicException('Define a lexer state first.');
         }
 
-        $this->states[$this->stateBeingBuilt]['recognizers'][$type] = new RegexRecognizer($regex);
+        $this->states[$this->stateBeingBuilt]['recognizers'][$type] = new RegexTokenMatcher($regex);
         $this->states[$this->stateBeingBuilt]['actions'][$type]     = self::NO_ACTION;
         $this->typeBeingBuilt                                       = $type;
 
@@ -186,7 +186,7 @@ class StatefulLexer extends AbstractLexer
         $state = $this->states[$this->stateStack[count($this->stateStack) - 1]];
 
         /**
-         * @var \Aop\LALR\Lexer\RecognizerInterface $recognizer
+         * @var \Aop\LALR\Contract\TokenMatcherInterface $recognizer
          */
         foreach ($state['recognizers'] as $t => $recognizer) {
 

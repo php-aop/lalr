@@ -1,8 +1,8 @@
 <?php
 
-namespace Aop\LALR\Tests\Recognizer;
+namespace Aop\LALR\Tests\TokenMatcher;
 
-use Aop\LALR\Lexer\Recognizer\SimpleRecognizer;
+use Aop\LALR\Lexer\TokenMatcher\StringTokenMatcher;
 use PHPUnit\Framework\TestCase;
 
 final class SimpleRecognizerTest extends TestCase
@@ -12,7 +12,7 @@ final class SimpleRecognizerTest extends TestCase
      */
     public function recognizerShouldMatchAndPassTheValueByReference()
     {
-        $recognizer = new SimpleRecognizer('class');
+        $recognizer = new StringTokenMatcher('class');
         $result     = $recognizer->match('class lorem ipsum', $value);
 
         $this->assertTrue($result);
@@ -25,7 +25,7 @@ final class SimpleRecognizerTest extends TestCase
      */
     public function recognizerShouldFailAndTheValueShouldStayNull()
     {
-        $recognizer = new SimpleRecognizer('class');
+        $recognizer = new StringTokenMatcher('class');
         $result     = $recognizer->match('lorem ipsum', $value);
 
         $this->assertFalse($result);

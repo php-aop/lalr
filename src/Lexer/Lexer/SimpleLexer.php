@@ -2,11 +2,12 @@
 
 namespace Aop\LALR\Lexer\Lexer;
 
-use function Aop\LALR\Functions\utf8_strlen;
-use Aop\LALR\Lexer\Recognizer\RegexRecognizer;
-use Aop\LALR\Lexer\Recognizer\SimpleRecognizer;
+use Aop\LALR\Lexer\TokenMatcher\RegexTokenMatcher;
+use Aop\LALR\Lexer\TokenMatcher\StringTokenMatcher;
 use Aop\LALR\Lexer\Token;
-use Aop\LALR\Lexer\TokenInterface;
+use Aop\LALR\Contract\TokenInterface;
+
+use function Aop\LALR\Functions\utf8_strlen;
 
 /**
  * SimpleLexer uses specified recognizers
@@ -36,7 +37,7 @@ class SimpleLexer extends AbstractLexer
      */
     public function token(string $type, ?string $value = null): SimpleLexer
     {
-        $this->recognizers[$type] = new SimpleRecognizer($value ?? $type);
+        $this->recognizers[$type] = new StringTokenMatcher($value ?? $type);
 
         return $this;
     }
@@ -51,7 +52,7 @@ class SimpleLexer extends AbstractLexer
      */
     public function regex(string $type, string $regex): SimpleLexer
     {
-        $this->recognizers[$type] = new RegexRecognizer($regex);
+        $this->recognizers[$type] = new RegexTokenMatcher($regex);
 
         return $this;
     }
@@ -59,13 +60,13 @@ class SimpleLexer extends AbstractLexer
     /**
      * Marks the token types given as arguments to be skipped.
      *
-     * @param mixed $type,... Unlimited number of token types.
+     * @param string[] $types Token types to skip.
      *
      * @return \Aop\LALR\Lexer\Lexer\SimpleLexer This instance for fluent interface.
      */
-    public function skip(): SimpleLexer
+    public function skip(string ...$types): SimpleLexer
     {
-        $this->skipTokens = func_get_args();
+        $this->skipTokens = $types;
 
         return $this;
     }

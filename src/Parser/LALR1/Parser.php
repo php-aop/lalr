@@ -3,7 +3,7 @@
 namespace Aop\LALR\Parser\LALR1;
 
 use Aop\LALR\Exception\UnexpectedTokenException;
-use Aop\LALR\Lexer\TokenStreamInterface;
+use Aop\LALR\Contract\TokenStreamInterface;
 use Aop\LALR\Parser\Grammar;
 use Aop\LALR\Parser\LALR1\Analysis\Analyzer;
 use Aop\LALR\Parser\ParserInterface;
@@ -41,7 +41,7 @@ final class Parser implements ParserInterface
         $args       = [];
 
         /**
-         * @var \Aop\LALR\Lexer\TokenInterface $token
+         * @var \Aop\LALR\Contract\TokenInterface $token
          */
         foreach ($stream as $token) {
 

@@ -4,8 +4,8 @@ namespace Aop\LALR\Lexer\Lexer;
 
 use Aop\LALR\Lexer\LexerInterface;
 use Aop\LALR\Lexer\Token;
-use Aop\LALR\Lexer\TokenStream\ArrayTokenStream;
-use Aop\LALR\Lexer\TokenStreamInterface;
+use Aop\LALR\Lexer\TokenStream;
+use Aop\LALR\Contract\TokenStreamInterface;
 use Aop\LALR\Parser\LALR1\Parser;
 
 abstract class AbstractRegexLexer implements LexerInterface
@@ -31,8 +31,7 @@ abstract class AbstractRegexLexer implements LexerInterface
         $line        = 1;
         $oldPosition = 0;
 
-        foreach ($matches as $match) {
-            list ($value, $position) = $match;
+        foreach ($matches as [$value, $position]) {
 
             $type = $this->getType($value);
 
@@ -47,7 +46,7 @@ abstract class AbstractRegexLexer implements LexerInterface
 
         $tokens[] = new Token(Parser::EOF_TOKEN_TYPE, '', $line);
 
-        return new ArrayTokenStream($tokens);
+        return new TokenStream($tokens);
     }
 
     /**

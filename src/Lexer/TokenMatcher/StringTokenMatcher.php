@@ -1,15 +1,17 @@
 <?php
 
-namespace Aop\LALR\Lexer\Recognizer;
+declare(strict_types=1);
 
-use Aop\LALR\Lexer\RecognizerInterface;
+namespace Aop\LALR\Lexer\TokenMatcher;
 
-final class SimpleRecognizer implements RecognizerInterface
+use Aop\LALR\Contract\TokenMatcherInterface;
+
+final class StringTokenMatcher implements TokenMatcherInterface
 {
     /**
      * @var string
      */
-    protected $string;
+    private $string;
 
     /**
      * Constructor.

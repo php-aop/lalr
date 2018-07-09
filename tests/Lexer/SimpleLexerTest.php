@@ -48,7 +48,7 @@ final class SimpleLexerTest extends TestCase
         $stream = $this->lexer->lex('a (b) c');
 
         /**
-         * @var \Aop\LALR\Lexer\TokenInterface $token
+         * @var \Aop\LALR\Contract\TokenInterface $token
          */
         foreach ($stream as $token) {
             $this->assertNotEquals('WS', $token->getType());
@@ -66,6 +66,6 @@ final class SimpleLexerTest extends TestCase
         $stream = $this->lexer->lex('class classloremipsum');
 
         $this->assertEquals('CLASS', $stream->getCurrentToken()->getType());
-        $this->assertEquals('WORD', $stream->lookAhead(1)->getType());
+        $this->assertEquals('WORD', $stream->look(1)->getType());
     }
 }

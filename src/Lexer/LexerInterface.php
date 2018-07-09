@@ -2,9 +2,10 @@
 
 namespace Aop\LALR\Lexer;
 
+use Aop\LALR\Contract\TokenStreamInterface;
+
 /**
- * A lexer takes an input string and processes
- * it into a token stream.
+ * A lexer takes an input string and processes it into a token stream.
  */
 interface LexerInterface
 {
@@ -13,10 +14,9 @@ interface LexerInterface
      *
      * @param string $string The string to lex.
      *
-     * @throws \Aop\LALR\Exception\RecognitionException
-     * When unable to extract more tokens from the string.
+     * @throws \Aop\LALR\Exception\RecognitionException When unable to extract more tokens from the string.
      *
-     * @return \Aop\LALR\Lexer\TokenStreamInterface The resulting token stream.
+     * @return \Aop\LALR\Contract\TokenStreamInterface The resulting token stream.
      */
     public function lex(string $string): TokenStreamInterface;
 }

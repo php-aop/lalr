@@ -2,7 +2,7 @@
 
 namespace Aop\LALR\Exception;
 
-use Aop\LALR\Lexer\TokenInterface;
+use Aop\LALR\Contract\TokenInterface;
 
 class UnexpectedTokenException extends RuntimeException
 {
@@ -13,7 +13,7 @@ Expected one of %s.
 EOT;
 
     /**
-     * @var \Aop\LALR\Lexer\TokenInterface
+     * @var \Aop\LALR\Contract\TokenInterface
      */
     protected $token;
 
@@ -25,7 +25,7 @@ EOT;
     /**
      * Constructor.
      *
-     * @param \Aop\LALR\Lexer\TokenInterface $token The unexpected token.
+     * @param \Aop\LALR\Contract\TokenInterface $token The unexpected token.
      * @param string[] $expected                    The expected token types.
      */
     public function __construct(TokenInterface $token, array $expected)
@@ -45,7 +45,7 @@ EOT;
     /**
      * Returns the unexpected token.
      *
-     * @return \Aop\LALR\Lexer\TokenInterface The unexpected token.
+     * @return \Aop\LALR\Contract\TokenInterface The unexpected token.
      */
     public function getToken(): TokenInterface
     {

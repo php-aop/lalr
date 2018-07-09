@@ -1,6 +1,8 @@
 <?php
 
-namespace Aop\LALR\Lexer;
+declare(strict_types=1);
+
+namespace Aop\LALR\Contract;
 
 /**
  * A common contract for tokens.
@@ -10,9 +12,9 @@ interface TokenInterface
     /**
      * Returns the token type.
      *
-     * @return mixed The token type.
+     * @return string The token type.
      */
-    public function getType();
+    public function getType(): string;
 
     /**
      * Returns the token value.

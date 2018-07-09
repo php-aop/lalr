@@ -1,8 +1,8 @@
 <?php
 
-namespace Aop\LALR\Tests\Recognizer;
+namespace Aop\LALR\Tests\TokenMatcher;
 
-use Aop\LALR\Lexer\Recognizer\RegexRecognizer;
+use Aop\LALR\Lexer\TokenMatcher\RegexTokenMatcher;
 use PHPUnit\Framework\TestCase;
 
 final class RegexRecognizerTest extends TestCase
@@ -12,7 +12,7 @@ final class RegexRecognizerTest extends TestCase
      */
     public function recognizerShouldMatchAndPassTheValueByReference()
     {
-        $recognizer = new RegexRecognizer('/[a-z]+/');
+        $recognizer = new RegexTokenMatcher('/[a-z]+/');
         $result     = $recognizer->match('lorem ipsum', $value);
 
         $this->assertTrue($result);
@@ -25,7 +25,7 @@ final class RegexRecognizerTest extends TestCase
      */
     public function recognizerShouldFailAndTheValueShouldStayNull()
     {
-        $recognizer = new RegexRecognizer('/[a-z]+/');
+        $recognizer = new RegexTokenMatcher('/[a-z]+/');
         $result     = $recognizer->match('123 456', $value);
 
         $this->assertFalse($result);
@@ -37,7 +37,7 @@ final class RegexRecognizerTest extends TestCase
      */
     public function recognizerShouldFailIfTheMatchIsNotAtTheBeginningOfTheString()
     {
-        $recognizer = new RegexRecognizer('/[a-z]+/');
+        $recognizer = new RegexTokenMatcher('/[a-z]+/');
         $result     = $recognizer->match('234 class', $value);
 
         $this->assertFalse($result);

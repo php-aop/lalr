@@ -3,19 +3,19 @@
 namespace Aop\LALR\Tests\TokenStream;
 
 use Aop\LALR\Lexer\Token;
-use Aop\LALR\Lexer\TokenStream\ArrayTokenStream;
+use Aop\LALR\Lexer\TokenStream;
 use PHPUnit\Framework\TestCase;
 
 final class ArrayTokenStreamTest extends TestCase
 {
     /**
-     * @var \Aop\LALR\Lexer\TokenStream\ArrayTokenStream
+     * @var \Aop\LALR\Lexer\TokenStream
      */
     protected $stream;
 
     protected function setUp()
     {
-        $this->stream = new ArrayTokenStream(array(
+        $this->stream = new TokenStream(array(
             new Token('INT', '6', 1),
             new Token('PLUS', '+', 1),
             new Token('INT', '5', 1),
@@ -48,7 +48,7 @@ final class ArrayTokenStreamTest extends TestCase
      */
     public function lookAheadShouldReturnTheCorrectToken()
     {
-        $this->assertEquals('5', $this->stream->lookAhead(2)->getValue());
+        $this->assertEquals('5', $this->stream->look(2)->getValue());
     }
 
     /**
@@ -57,7 +57,7 @@ final class ArrayTokenStreamTest extends TestCase
      */
     public function lookAheadShouldThrowAnExceptionWhenInvalid()
     {
-        $this->stream->lookAhead(15);
+        $this->stream->look(15);
     }
 
     /**

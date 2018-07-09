@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Aop\LALR\Node;
+namespace Aop\LALR\Ast;
 
 use Aop\LALR\Contract\NodeInterface;
 use Aop\LALR\Exception\RuntimeException;
@@ -10,7 +10,7 @@ use Aop\LALR\Exception\RuntimeException;
 /**
  * An AST node.
  */
-final class Node implements NodeInterface
+abstract class AbstractNode implements NodeInterface
 {
     /**
      * @var array

@@ -2,7 +2,7 @@
 
 namespace Aop\LALR\Parser;
 
-use Aop\LALR\Lexer\TokenStreamInterface;
+use Aop\LALR\Contract\TokenStreamInterface;
 
 /**
  * The parser interface.
@@ -18,7 +18,7 @@ interface ParserInterface
      * Parses a token stream and returns the semantical value
      * of the input.
      *
-     * @param \Aop\LALR\Lexer\TokenStreamInterface $stream The token stream.
+     * @param \Aop\LALR\Contract\TokenStreamInterface $stream The token stream.
      *
      * @return mixed The semantical value of the input.
      */

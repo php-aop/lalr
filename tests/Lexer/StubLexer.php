@@ -4,7 +4,7 @@ namespace Aop\LALR\Tests\Lexer;
 
 use Aop\LALR\Lexer\Lexer\AbstractLexer;
 use Aop\LALR\Lexer\Token;
-use Aop\LALR\Lexer\TokenInterface;
+use Aop\LALR\Contract\TokenInterface;
 
 final class StubLexer extends AbstractLexer
 {
