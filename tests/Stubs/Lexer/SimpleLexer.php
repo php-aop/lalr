@@ -1,12 +1,14 @@
 <?php
 
-namespace Aop\LALR\Tests\Lexer;
+declare(strict_types=1);
 
-use Aop\LALR\Lexer\Lexer\AbstractLexer;
+namespace Aop\LALR\Tests\Stubs\Lexer;
+
+use Aop\LALR\Lexer\AbstractSimpleLexer;
 use Aop\LALR\Lexer\Token;
 use Aop\LALR\Contract\TokenInterface;
 
-final class StubLexer extends AbstractLexer
+final class SimpleLexer extends AbstractSimpleLexer
 {
     protected function extractToken(string $string): ?TokenInterface
     {

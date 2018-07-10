@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Aop\LALR\Tests\Ast;
 
 use Aop\LALR\Contract\NodeInterface;

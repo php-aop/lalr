@@ -2,9 +2,9 @@
 
 namespace Aop\LALR\Tests\Stubs\Arithmetic;
 
-use Aop\LALR\Lexer\Lexer\SimpleLexer;
+use Aop\LALR\Lexer\AbstractStatelessLexer;
 
-class Lexer extends SimpleLexer
+final class StatelessLexer extends AbstractStatelessLexer
 {
     public function __construct()
     {

@@ -1,27 +1,30 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Aop\LALR\Tests\Lexer;
 
 use Aop\LALR\Exception\RecognitionException;
 use Aop\LALR\Parser\LALR1\Parser;
+use Aop\LALR\Tests\Stubs\Lexer\SimpleLexer;
 use PHPUnit\Framework\TestCase;
 
 final class AbstractLexerTest extends TestCase
 {
     /**
-     * @var \Aop\LALR\Lexer\Lexer\AbstractLexer
+     * @var \Aop\LALR\Lexer\AbstractSimpleLexer
      */
     private $lexer;
 
-    public function setUp()
+    public function setUp(): void
     {
-        $this->lexer = new StubLexer();
+        $this->lexer = new SimpleLexer();
     }
 
     /**
      * @test
      */
-    public function lexShouldDelegateToExtractTokenUpdatingTheLineAndOffsetAccordingly()
+    public function lexShouldDelegateToExtractTokenUpdatingTheLineAndOffsetAccordingly(): void
     {
         $stream = $this->lexer->lex("ab\nc");
 
@@ -44,7 +47,7 @@ final class AbstractLexerTest extends TestCase
     /**
      * @test
      */
-    public function lexShouldAppendAnEofTokenAutomatically()
+    public function lexShouldAppendAnEofTokenAutomatically(): void
     {
         $stream = $this->lexer->lex('abc');
         $stream->seek(3);
@@ -56,7 +59,7 @@ final class AbstractLexerTest extends TestCase
     /**
      * @test
      */
-    public function lexShouldThrowAnExceptionOnAnUnrecognizableToken()
+    public function lexShouldThrowAnExceptionOnAnUnrecognizableToken(): void
     {
         try {
             $this->lexer->lex('abcd');
@@ -71,7 +74,7 @@ final class AbstractLexerTest extends TestCase
     /**
      * @test
      */
-    public function lexShouldNormalizeLineEndingsBeforeLexing()
+    public function lexShouldNormalizeLineEndingsBeforeLexing(): void
     {
         $stream = $this->lexer->lex("a\r\nb");
 
@@ -81,7 +84,7 @@ final class AbstractLexerTest extends TestCase
     /**
      * @test
      */
-    public function lexShouldSkipTokensIfToldToDoSo()
+    public function lexShouldSkipTokensIfToldToDoSo(): void
     {
         $stream = $this->lexer->lex('aeb');
 

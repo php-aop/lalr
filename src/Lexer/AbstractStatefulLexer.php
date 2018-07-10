@@ -1,30 +1,32 @@
 <?php
 
-namespace Aop\LALR\Lexer\Lexer;
+declare(strict_types=1);
+
+namespace Aop\LALR\Lexer;
 
 use Aop\LALR\Exception\LogicException;
-use function Aop\LALR\Functions\utf8_strlen;
 use Aop\LALR\Lexer\TokenMatcher\RegexTokenMatcher;
 use Aop\LALR\Lexer\TokenMatcher\StringTokenMatcher;
-use Aop\LALR\Lexer\Token;
 use Aop\LALR\Contract\TokenInterface;
 
+use function Aop\LALR\Functions\utf8_strlen;
+
 /**
- * The StatefulLexer works like SimpleLexer,
+ * The AbstractStatefulLexer works like AbstractStatelessLexer,
  * but internally keeps notion of current lexer state.
  */
-class StatefulLexer extends AbstractLexer
+abstract class AbstractStatefulLexer extends AbstractSimpleLexer
 {
     /**
      * Signifies that no action should be taken on encountering a token.
      */
-    public const NO_ACTION = 0;
+    private const NO_ACTION = 0;
 
     /**
      * Indicates that a state should be popped of the state stack on
      * encountering a token.
      */
-    public const POP_STATE = 1;
+    private const POP_STATE = 1;
 
     /**
      * @var array
@@ -54,9 +56,9 @@ class StatefulLexer extends AbstractLexer
      * @param string $type  The token type.
      * @param string $value The value to be recognized.
      *
-     * @return \Aop\LALR\Lexer\Lexer\StatefulLexer This instance for fluent interface.
+     * @return \Aop\LALR\Lexer\AbstractStatefulLexer Fluent interface.
      */
-    public function token(string $type, ?string $value = null): StatefulLexer
+    protected function token(string $type, ?string $value = null): AbstractStatefulLexer
     {
         if ($this->stateBeingBuilt === null) {
             throw new LogicException('Define a lexer state first.');
@@ -66,9 +68,9 @@ class StatefulLexer extends AbstractLexer
             $value = $type;
         }
 
-        $this->states[$this->stateBeingBuilt]['recognizers'][$type] = new StringTokenMatcher($value);
-        $this->states[$this->stateBeingBuilt]['actions'][$type]     = self::NO_ACTION;
-        $this->typeBeingBuilt                                       = $type;
+        $this->states[$this->stateBeingBuilt]['token_matchers'][$type] = new StringTokenMatcher($value);
+        $this->states[$this->stateBeingBuilt]['actions'][$type]        = self::NO_ACTION;
+        $this->typeBeingBuilt                                          = $type;
 
         return $this;
     }
@@ -79,17 +81,17 @@ class StatefulLexer extends AbstractLexer
      * @param string $type  The token type.
      * @param string $regex The regular expression used to match the token.
      *
-     * @return \Aop\LALR\Lexer\Lexer\StatefulLexer This instance for fluent interface.
+     * @return \Aop\LALR\Lexer\AbstractStatefulLexer Fluent interface.
      */
-    public function regex(string $type, ?string $regex): StatefulLexer
+    protected function regex(string $type, ?string $regex): AbstractStatefulLexer
     {
         if ($this->stateBeingBuilt === null) {
             throw new LogicException('Define a lexer state first.');
         }
 
-        $this->states[$this->stateBeingBuilt]['recognizers'][$type] = new RegexTokenMatcher($regex);
-        $this->states[$this->stateBeingBuilt]['actions'][$type]     = self::NO_ACTION;
-        $this->typeBeingBuilt                                       = $type;
+        $this->states[$this->stateBeingBuilt]['token_matchers'][$type] = new RegexTokenMatcher($regex);
+        $this->states[$this->stateBeingBuilt]['actions'][$type]        = self::NO_ACTION;
+        $this->typeBeingBuilt                                          = $type;
 
         return $this;
     }
@@ -97,17 +99,17 @@ class StatefulLexer extends AbstractLexer
     /**
      * Marks the token types given as arguments to be skipped.
      *
-     * @param mixed $type,... Unlimited number of token types.
+     * @param string[] $types Unlimited number of token types.
      *
-     * @return \Aop\LALR\Lexer\Lexer\StatefulLexer This instance for fluent interface.
+     * @return \Aop\LALR\Lexer\AbstractStatefulLexer Fluent interface.
      */
-    public function skip(): StatefulLexer
+    protected function skip(string ...$types): AbstractStatefulLexer
     {
         if ($this->stateBeingBuilt === null) {
             throw new LogicException('Define a lexer state first.');
         }
 
-        $this->states[$this->stateBeingBuilt]['skip_tokens'] = func_get_args();
+        $this->states[$this->stateBeingBuilt]['skip_tokens'] = $types;
 
         return $this;
     }
@@ -117,15 +119,15 @@ class StatefulLexer extends AbstractLexer
      *
      * @param string $state The new state name.
      *
-     * @return \Aop\LALR\Lexer\Lexer\StatefulLexer This instance for fluent interface.
+     * @return \Aop\LALR\Lexer\AbstractStatefulLexer Fluent interface.
      */
-    public function state($state): StatefulLexer
+    protected function state(string $state): AbstractStatefulLexer
     {
         $this->stateBeingBuilt = $state;
         $this->states[$state]  = [
-            'recognizers' => [],
-            'actions'     => [],
-            'skip_tokens' => [],
+            'token_matchers' => [],
+            'actions'        => [],
+            'skip_tokens'    => [],
         ];
 
         return $this;
@@ -136,9 +138,9 @@ class StatefulLexer extends AbstractLexer
      *
      * @param string $state The name of the starting state.
      *
-     * @return \Aop\LALR\Lexer\Lexer\StatefulLexer This instance for fluent interface.
+     * @return \Aop\LALR\Lexer\AbstractStatefulLexer Fluent interface.
      */
-    public function start(string $state): StatefulLexer
+    protected function start(string $state): AbstractStatefulLexer
     {
         $this->stateStack[] = $state;
 
@@ -150,9 +152,9 @@ class StatefulLexer extends AbstractLexer
      *
      * @param mixed $action The action to take.
      *
-     * @return \Aop\LALR\Lexer\Lexer\StatefulLexer This instance for fluent interface.
+     * @return \Aop\LALR\Lexer\AbstractStatefulLexer Fluent interface.
      */
-    public function action($action): StatefulLexer
+    protected function action($action): AbstractStatefulLexer
     {
         if ($this->stateBeingBuilt === null || $this->typeBeingBuilt === null) {
             throw new LogicException('Define a lexer state and type first.');
@@ -168,9 +170,9 @@ class StatefulLexer extends AbstractLexer
      */
     protected function shouldSkipToken(TokenInterface $token): bool
     {
-        $state = $this->states[$this->stateStack[count($this->stateStack) - 1]];
+        $state = $this->states[$this->stateStack[\count($this->stateStack) - 1]];
 
-        return \in_array($token->getType(), $state['skip_tokens']);
+        return \in_array($token->getType(), $state['skip_tokens'], true);
     }
 
     /**
@@ -179,30 +181,33 @@ class StatefulLexer extends AbstractLexer
     protected function extractToken(string $string): ?TokenInterface
     {
         if (empty($this->stateStack)) {
-            throw new LogicException("You must set a starting state before lexing.");
+            throw new LogicException('You must set a starting state before lexing.');
         }
 
-        $value = $type = $action = null;
-        $state = $this->states[$this->stateStack[count($this->stateStack) - 1]];
+        $value  = null;
+        $type   = null;
+        $action = null;
+        $state  = $this->states[$this->stateStack[\count($this->stateStack) - 1]];
 
         /**
-         * @var \Aop\LALR\Contract\TokenMatcherInterface $recognizer
+         * @var \Aop\LALR\Contract\TokenMatcherInterface $tokenMatcher
          */
-        foreach ($state['recognizers'] as $t => $recognizer) {
+        foreach ($state['token_matchers'] as $tokenType => $tokenMatcher) {
 
             if (null === $string) {
                 continue;
             }
 
-            $v = null;
+            $tokenValue = null;
 
-            if ($recognizer->match($string, $v)) {
+            if (!$tokenMatcher->match($string, $tokenValue)) {
+                continue;
+            }
 
-                if ($value === null || utf8_strlen($v) > utf8_strlen($value)) {
-                    $value  = $v;
-                    $type   = $t;
-                    $action = $state['actions'][$type];
-                }
+            if ($value === null || utf8_strlen($tokenValue) > utf8_strlen($value)) {
+                $value  = $tokenValue;
+                $type   = $tokenType;
+                $action = $state['actions'][$type];
             }
         }
 

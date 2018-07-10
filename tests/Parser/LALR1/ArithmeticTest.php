@@ -5,13 +5,13 @@ namespace Aop\LALR\Tests\Parser\LALR1;
 use Aop\LALR\Exception\UnexpectedTokenException;
 use Aop\LALR\Parser\LALR1\Parser;
 use Aop\LALR\Tests\Stubs\Arithmetic\Grammar;
-use Aop\LALR\Tests\Stubs\Arithmetic\Lexer;
+use Aop\LALR\Tests\Stubs\Arithmetic\StatelessLexer;
 use PHPUnit\Framework\TestCase;
 
 final class ArithmeticTest extends TestCase
 {
     /**
-     * @var \Aop\LALR\Tests\Stubs\Arithmetic\Lexer
+     * @var \Aop\LALR\Tests\Stubs\Arithmetic\StatelessLexer
      */
     private $lexer;
 
@@ -22,7 +22,7 @@ final class ArithmeticTest extends TestCase
 
     protected function setUp()
     {
-        $this->lexer = new Lexer();
+        $this->lexer = new StatelessLexer();
         $this->parser = new Parser(new Grammar());
     }
 

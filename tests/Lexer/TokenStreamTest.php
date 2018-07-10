@@ -1,19 +1,21 @@
 <?php
 
-namespace Aop\LALR\Tests\TokenStream;
+declare(strict_types=1);
+
+namespace Aop\LALR\Tests\Lexer;
 
 use Aop\LALR\Lexer\Token;
 use Aop\LALR\Lexer\TokenStream;
 use PHPUnit\Framework\TestCase;
 
-final class ArrayTokenStreamTest extends TestCase
+final class TokenStreamTest extends TestCase
 {
     /**
      * @var \Aop\LALR\Lexer\TokenStream
      */
     protected $stream;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->stream = new TokenStream(array(
             new Token('INT', '6', 1),
@@ -27,7 +29,7 @@ final class ArrayTokenStreamTest extends TestCase
     /**
      * @test
      */
-    public function theCursorShouldBeOnFirstTokenByDefault()
+    public function theCursorShouldBeOnFirstTokenByDefault(): void
     {
         $this->assertEquals('6', $this->stream->getCurrentToken()->getValue());
     }
@@ -35,7 +37,7 @@ final class ArrayTokenStreamTest extends TestCase
     /**
      * @test
      */
-    public function getPositionShouldReturnCurrentPosition()
+    public function getPositionShouldReturnCurrentPosition(): void
     {
         $this->stream->seek(2);
         $this->stream->next();
@@ -46,7 +48,7 @@ final class ArrayTokenStreamTest extends TestCase
     /**
      * @test
      */
-    public function lookAheadShouldReturnTheCorrectToken()
+    public function lookAheadShouldReturnTheCorrectToken(): void
     {
         $this->assertEquals('5', $this->stream->look(2)->getValue());
     }
@@ -55,7 +57,7 @@ final class ArrayTokenStreamTest extends TestCase
      * @test
      * @expectedException \Aop\LALR\Exception\OutOfBoundsException
      */
-    public function lookAheadShouldThrowAnExceptionWhenInvalid()
+    public function lookAheadShouldThrowAnExceptionWhenInvalid(): void
     {
         $this->stream->look(15);
     }
@@ -63,7 +65,7 @@ final class ArrayTokenStreamTest extends TestCase
     /**
      * @test
      */
-    public function getShouldReturnATokenByAbsolutePosition()
+    public function getShouldReturnATokenByAbsolutePosition(): void
     {
         $this->assertEquals('3', $this->stream->get(4)->getValue());
     }
@@ -72,7 +74,7 @@ final class ArrayTokenStreamTest extends TestCase
      * @test
      * @expectedException \Aop\LALR\Exception\OutOfBoundsException
      */
-    public function getShouldThrowAnExceptionWhenInvalid()
+    public function getShouldThrowAnExceptionWhenInvalid(): void
     {
         $this->stream->get(15);
     }
@@ -80,7 +82,7 @@ final class ArrayTokenStreamTest extends TestCase
     /**
      * @test
      */
-    public function moveShouldMoveTheCursorByToAnAbsolutePosition()
+    public function moveShouldMoveTheCursorByToAnAbsolutePosition(): void
     {
         $this->stream->move(2);
         $this->assertEquals('5', $this->stream->getCurrentToken()->getValue());
@@ -90,7 +92,7 @@ final class ArrayTokenStreamTest extends TestCase
      * @test
      * @expectedException \Aop\LALR\Exception\OutOfBoundsException
      */
-    public function moveShouldThrowAnExceptionWhenInvalid()
+    public function moveShouldThrowAnExceptionWhenInvalid(): void
     {
         $this->stream->move(15);
     }
@@ -98,7 +100,7 @@ final class ArrayTokenStreamTest extends TestCase
     /**
      * @test
      */
-    public function seekShouldMoveTheCursorByRelativeOffset()
+    public function seekShouldMoveTheCursorByRelativeOffset(): void
     {
         $this->stream->seek(4);
         $this->assertEquals('3', $this->stream->getCurrentToken()->getValue());
@@ -108,7 +110,7 @@ final class ArrayTokenStreamTest extends TestCase
      * @test
      * @expectedException \Aop\LALR\Exception\OutOfBoundsException
      */
-    public function seekShouldThrowAnExceptionWhenInvalid()
+    public function seekShouldThrowAnExceptionWhenInvalid(): void
     {
         $this->stream->seek(15);
     }
@@ -116,7 +118,7 @@ final class ArrayTokenStreamTest extends TestCase
     /**
      * @test
      */
-    public function nextShouldMoveTheCursorOneTokenAhead()
+    public function nextShouldMoveTheCursorOneTokenAhead(): void
     {
         $this->stream->next();
         $this->assertEquals('PLUS', $this->stream->getCurrentToken()->getType());
@@ -129,7 +131,7 @@ final class ArrayTokenStreamTest extends TestCase
      * @test
      * @expectedException \Aop\LALR\Exception\OutOfBoundsException
      */
-    public function nextShouldThrowAnExceptionWhenAtTheEndOfTheStream()
+    public function nextShouldThrowAnExceptionWhenAtTheEndOfTheStream(): void
     {
         $this->stream->seek(4);
         $this->stream->next();

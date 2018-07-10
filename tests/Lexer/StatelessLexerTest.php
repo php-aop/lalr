@@ -1,36 +1,28 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Aop\LALR\Tests\Lexer;
 
-use Aop\LALR\Lexer\Lexer\SimpleLexer;
+use Aop\LALR\Tests\Stubs\Lexer\StatelessLexer;
 use PHPUnit\Framework\TestCase;
 
-final class SimpleLexerTest extends TestCase
+final class StatelessLexerTest extends TestCase
 {
     /**
-     * @var \Aop\LALR\Lexer\Lexer\SimpleLexer
+     * @var \Aop\LALR\Tests\Stubs\Lexer\StatelessLexer
      */
     protected $lexer;
 
-    public function setUp()
+    public function setUp(): void
     {
-        $this->lexer = new SimpleLexer();
-
-        $this->lexer
-            ->token('A', 'a')
-            ->token('(')
-            ->token('B', 'b')
-            ->token(')')
-            ->token('C', 'c')
-            ->regex('WS', "/[ \n\t\r]+/")
-
-            ->skip('WS');
+        $this->lexer = new StatelessLexer();
     }
 
     /**
      * @test
      */
-    public function simpleLexerShouldWalkThroughTheRecognizers()
+    public function lexerShouldWalkThroughTheRecognizers(): void
     {
         $stream = $this->lexer->lex('a (b) c');
 
@@ -43,7 +35,7 @@ final class SimpleLexerTest extends TestCase
     /**
      * @test
      */
-    public function simpleLexerShouldSkipSpecifiedTokens()
+    public function lexerShouldSkipSpecifiedTokens(): void
     {
         $stream = $this->lexer->lex('a (b) c');
 
@@ -58,11 +50,8 @@ final class SimpleLexerTest extends TestCase
     /**
      * @test
      */
-    public function simpleLexerShouldReturnTheBestMatch()
+    public function lexerShouldReturnTheBestMatch(): void
     {
-        $this->lexer->token('CLASS', 'class');
-        $this->lexer->regex('WORD', '/[a-z]+/');
-
         $stream = $this->lexer->lex('class classloremipsum');
 
         $this->assertEquals('CLASS', $stream->getCurrentToken()->getType());

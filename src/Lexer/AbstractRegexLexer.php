@@ -1,13 +1,18 @@
 <?php
 
-namespace Aop\LALR\Lexer\Lexer;
+declare(strict_types=1);
 
-use Aop\LALR\Lexer\LexerInterface;
-use Aop\LALR\Lexer\Token;
-use Aop\LALR\Lexer\TokenStream;
+namespace Aop\LALR\Lexer;
+
+use Aop\LALR\Contract\LexerInterface;
 use Aop\LALR\Contract\TokenStreamInterface;
 use Aop\LALR\Parser\LALR1\Parser;
 
+/**
+ * Highly performant, less user friendly lexer based on Doctrine's lexer.
+ *
+ * @see https://github.com/doctrine/lexer/blob/master/lib/Doctrine/Common/Lexer/AbstractLexer.php
+ */
 abstract class AbstractRegexLexer implements LexerInterface
 {
     /**

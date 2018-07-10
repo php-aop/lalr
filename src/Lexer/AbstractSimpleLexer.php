@@ -1,12 +1,12 @@
 <?php
 
-namespace Aop\LALR\Lexer\Lexer;
+declare(strict_types=1);
+
+namespace Aop\LALR\Lexer;
 
 use Aop\LALR\Exception\RecognitionException;
-use Aop\LALR\Lexer\LexerInterface;
-use Aop\LALR\Lexer\Token;
+use Aop\LALR\Contract\LexerInterface;
 use Aop\LALR\Contract\TokenInterface;
-use Aop\LALR\Lexer\TokenStream;
 use Aop\LALR\Contract\TokenStreamInterface;
 use Aop\LALR\Parser\LALR1\Parser;
 
@@ -16,7 +16,7 @@ use function Aop\LALR\Functions\substring;
 /**
  * Lexers prototype
  */
-abstract class AbstractLexer implements LexerInterface
+abstract class AbstractSimpleLexer implements LexerInterface
 {
     /**
      * @var int
@@ -51,16 +51,16 @@ abstract class AbstractLexer implements LexerInterface
             $position += $shift;
 
             if ($position > 0) {
-                $this->line = substr_count($originalString, "\n", 0, $position) + 1;
+                $this->line = \substr_count($originalString, "\n", 0, $position) + 1;
             }
 
             $string = substring($string, $shift);
         }
 
         if ($position !== $originalLength) {
-            $lines        = explode("\n", $originalString);
+            $lines        = \explode("\n", $originalString);
             $errorLine    = $lines[$this->line - 1];
-            $linePosition = strpos($errorLine, $string);
+            $linePosition = \strpos($errorLine, $string);
 
             throw new RecognitionException($string, $linePosition, $this->line);
         }

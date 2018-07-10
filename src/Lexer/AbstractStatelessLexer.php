@@ -1,19 +1,19 @@
 <?php
 
-namespace Aop\LALR\Lexer\Lexer;
+declare(strict_types=1);
+
+namespace Aop\LALR\Lexer;
 
 use Aop\LALR\Lexer\TokenMatcher\RegexTokenMatcher;
 use Aop\LALR\Lexer\TokenMatcher\StringTokenMatcher;
-use Aop\LALR\Lexer\Token;
 use Aop\LALR\Contract\TokenInterface;
 
 use function Aop\LALR\Functions\utf8_strlen;
 
 /**
- * SimpleLexer uses specified recognizers
- * without keeping track of state.
+ * AbstractStatelessLexer uses specified matchers without keeping track of state.
  */
-class SimpleLexer extends AbstractLexer
+abstract class AbstractStatelessLexer extends AbstractSimpleLexer
 {
     /**
      * @var array
@@ -23,7 +23,7 @@ class SimpleLexer extends AbstractLexer
     /**
      * @var array
      */
-    private $recognizers = [];
+    private $tokenMatchers = [];
 
     /**
      * Adds a new token definition. If given only one argument,
@@ -33,11 +33,11 @@ class SimpleLexer extends AbstractLexer
      * @param string $type  The token type.
      * @param string $value The value to be recognized.
      *
-     * @return \Aop\LALR\Lexer\Lexer\SimpleLexer This instance for fluent interface.
+     * @return \Aop\LALR\Lexer\AbstractStatelessLexer Fluent interface.
      */
-    public function token(string $type, ?string $value = null): SimpleLexer
+    protected function token(string $type, ?string $value = null): AbstractStatelessLexer
     {
-        $this->recognizers[$type] = new StringTokenMatcher($value ?? $type);
+        $this->tokenMatchers[$type] = new StringTokenMatcher($value ?? $type);
 
         return $this;
     }
@@ -48,11 +48,11 @@ class SimpleLexer extends AbstractLexer
      * @param string $type  The token type.
      * @param string $regex The regular expression used to match the token.
      *
-     * @return \Aop\LALR\Lexer\Lexer\SimpleLexer This instance for fluent interface.
+     * @return \Aop\LALR\Lexer\AbstractStatelessLexer Fluent interface.
      */
-    public function regex(string $type, string $regex): SimpleLexer
+    protected function regex(string $type, string $regex): AbstractStatelessLexer
     {
-        $this->recognizers[$type] = new RegexTokenMatcher($regex);
+        $this->tokenMatchers[$type] = new RegexTokenMatcher($regex);
 
         return $this;
     }
@@ -62,9 +62,9 @@ class SimpleLexer extends AbstractLexer
      *
      * @param string[] $types Token types to skip.
      *
-     * @return \Aop\LALR\Lexer\Lexer\SimpleLexer This instance for fluent interface.
+     * @return \Aop\LALR\Lexer\AbstractStatelessLexer Fluent interface.
      */
-    public function skip(string ...$types): SimpleLexer
+    protected function skip(string ...$types): AbstractStatelessLexer
     {
         $this->skipTokens = $types;
 
@@ -76,7 +76,7 @@ class SimpleLexer extends AbstractLexer
      */
     protected function shouldSkipToken(TokenInterface $token): bool
     {
-        return in_array($token->getType(), $this->skipTokens);
+        return \in_array($token->getType(), $this->skipTokens, true);
     }
 
     /**
@@ -84,21 +84,27 @@ class SimpleLexer extends AbstractLexer
      */
     protected function extractToken(string $string): ?TokenInterface
     {
-        $value = $type = null;
+        $value = null;
+        $type  = null;
 
-        foreach ($this->recognizers as $t => $recognizer) {
+        /**
+         * @var \Aop\LALR\Contract\TokenMatcherInterface $tokenMatcher
+         */
+        foreach ($this->tokenMatchers as $tokenType => $tokenMatcher) {
 
-            $v = null;
+            $matchedValue = null;
 
             if (null === $string) {
                 continue;
             }
 
-            if ($recognizer->match($string, $v)) {
-                if ($value === null || utf8_strlen($v) > utf8_strlen($value)) {
-                    $value = $v;
-                    $type  = $t;
-                }
+            if (!$tokenMatcher->match($string, $matchedValue)) {
+                continue;
+            }
+
+            if ($value === null || utf8_strlen($matchedValue) > utf8_strlen($value)) {
+                $value = $matchedValue;
+                $type  = $tokenType;
             }
         }
 

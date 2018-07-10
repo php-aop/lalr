@@ -1,11 +1,13 @@
 <?php
 
-namespace Aop\LALR\Tests\Lexer;
+declare(strict_types=1);
+
+namespace Aop\LALR\Tests\Stubs\Lexer;
 
 use Aop\LALR\Exception\RuntimeException;
-use Aop\LALR\Lexer\Lexer\AbstractRegexLexer;
+use Aop\LALR\Lexer\AbstractRegexLexer;
 
-final class StubRegexLexer extends AbstractRegexLexer
+final class RegexLexer extends AbstractRegexLexer
 {
     private $operators = ['+', '-'];
 

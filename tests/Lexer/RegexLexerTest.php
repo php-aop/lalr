@@ -1,26 +1,29 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Aop\LALR\Tests\Lexer;
 
 use Aop\LALR\Parser\LALR1\Parser;
+use Aop\LALR\Tests\Stubs\Lexer\RegexLexer;
 use PHPUnit\Framework\TestCase;
 
 final class RegexLexerTest extends TestCase
 {
     /**
-     * @var \Aop\LALR\Lexer\Lexer\AbstractRegexLexer
+     * @var \Aop\LALR\Lexer\AbstractRegexLexer
      */
     private $lexer;
 
-    protected function setUp()
+    protected function setUp(): void
     {
-        $this->lexer = new StubRegexLexer();
+        $this->lexer = new RegexLexer();
     }
 
     /**
      * @test
      */
-    public function itShouldCallGetTypeToRetrieveTokenType()
+    public function itShouldCallGetTypeToRetrieveTokenType(): void
     {
         $stream = $this->lexer->lex('5 + 6');
 
@@ -33,7 +36,7 @@ final class RegexLexerTest extends TestCase
     /**
      * @test
      */
-    public function itShouldTrackLineNumbers()
+    public function itShouldTrackLineNumbers(): void
     {
         $stream = $this->lexer->lex("5\n+\n\n5");
 

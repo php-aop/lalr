@@ -1,14 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Aop\LALR\Tests\Lexer;
 
-use Aop\LALR\Lexer\Lexer\StatefulLexer;
+use Aop\LALR\Tests\Stubs\Lexer\StatefulLexer;
 use PHPUnit\Framework\TestCase;
 
 final class StatefulLexerTest extends TestCase
 {
     /**
-     * @var \Aop\LALR\Lexer\Lexer\StatefulLexer
+     * @var \Aop\LALR\Tests\Stubs\Lexer\StatefulLexer
      */
     protected $lexer;
 
@@ -22,7 +24,7 @@ final class StatefulLexerTest extends TestCase
      * @expectedException \Aop\LALR\Exception\LogicException
      * @expectedExceptionMessage Define a lexer state first.
      */
-    public function addingNewTokenShouldThrowAnExceptionWhenNoStateIsBeingBuilt()
+    public function addingNewTokenShouldThrowAnExceptionWhenNoStateIsBeingBuilt(): void
     {
         $this->lexer->regex('WORD', '/[a-z]+/');
     }
@@ -31,7 +33,7 @@ final class StatefulLexerTest extends TestCase
      * @test
      * @expectedException \Aop\LALR\Exception\LogicException
      */
-    public function anExceptionShouldBeThrownOnLexingWithoutAStartingState()
+    public function anExceptionShouldBeThrownOnLexingWithoutAStartingState(): void
     {
         $this->lexer->state('root');
         $this->lexer->lex('foo');
@@ -40,17 +42,19 @@ final class StatefulLexerTest extends TestCase
     /**
      * @test
      */
-    public function theStateMechanismShouldCorrectlyPushAndPopStatesFromTheStack()
+    public function theStateMechanismShouldCorrectlyPushAndPopStatesFromTheStack(): void
     {
-        $this->lexer->state('root')
-            ->regex('WORD', '/[a-z]+/')
-            ->regex('WS', "/[ \r\n\t]+/")
-            ->token('"')->action('string')
-            ->skip('WS');
+        $this->lexer->state('root');
+        $this->lexer->regex('WORD', '/[a-z]+/');
+        $this->lexer->regex('WS', "/[ \r\n\t]+/");
+        $this->lexer->token('"');
+        $this->lexer->action('string');
+        $this->lexer->skip('WS');
 
-        $this->lexer->state('string')
-            ->regex('STRING_CONTENTS', '/(\\\\"|[^"])*/')
-            ->token('"')->action(StatefulLexer::POP_STATE);
+        $this->lexer->state('string');
+        $this->lexer->regex('STRING_CONTENTS', '/(\\\\"|[^"])*/');
+        $this->lexer->token('"');
+        $this->lexer->action(1); /* POP_STATE */
 
         $this->lexer->start('root');
 
@@ -65,18 +69,17 @@ final class StatefulLexerTest extends TestCase
     /**
      * @test
      */
-    public function defaultActionShouldBeNop()
+    public function defaultActionShouldBeNoop(): void
     {
-        $this->lexer->state('root')
-            ->regex('WORD', '/[a-z]+/')
-            ->regex('WS', "/[ \r\n\t]+/")
-            ->skip('WS');
-
+        $this->lexer->state('root');
+        $this->lexer->regex('WORD', '/[a-z]+/');
+        $this->lexer->regex('WS', "/[ \r\n\t]+/");
+        $this->lexer->skip('WS');
         $this->lexer->state('string');
-
         $this->lexer->start('root');
 
         $stream = $this->lexer->lex('foo bar');
+
         $this->assertEquals(3, $stream->count());
     }
 }

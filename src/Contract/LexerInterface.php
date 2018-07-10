@@ -1,8 +1,8 @@
 <?php
 
-namespace Aop\LALR\Lexer;
+declare(strict_types=1);
 
-use Aop\LALR\Contract\TokenStreamInterface;
+namespace Aop\LALR\Contract;
 
 /**
  * A lexer takes an input string and processes it into a token stream.

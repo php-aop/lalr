@@ -2,12 +2,12 @@ Lexical analysis with Dissect
 =============================
 
 There are three classes for lexical analysis in Dissect, all under the
-namespace `Dissect\Lexer`: `SimpleLexer`, `StatefulLexer` and `RegexLexer`.
+namespace `Dissect\Lexer`: `AbstractStatelessLexer`, `AbstractStatefulLexer` and `RegexLexer`.
 
 SimpleLexer
 -----------
 
-`SimpleLexer` simply accepts some token definitions and applies them on
+`AbstractStatelessLexer` simply accepts some token definitions and applies them on
 the input. Let's create a subclass for this chapter:
 
 ```php
@@ -118,18 +118,18 @@ use.
 StatefulLexer
 -------------
 
-`SimpleLexer` should work fine for general use cases. However, let's
+`AbstractStatelessLexer` should work fine for general use cases. However, let's
 imagine we're lexing a very simple templating language:
 
     Outer content, {{ variable_name }}, other outer content
 
-`SimpleLexer` falls short here, because the outer content can be pretty
+`AbstractStatelessLexer` falls short here, because the outer content can be pretty
 much anything, while the content inside the tags has to be strictly
 intepreted. Furthermore, if we were to work with this template, we'd
 want to skip the whitespace inside tags, but keep it in the outer
 content.
 
-That's where `StatefulLexer` comes in; during lexing, it maintains a
+That's where `AbstractStatefulLexer` comes in; during lexing, it maintains a
 stack of states with the top one being the current one, and for each
 token, you can define the action the lexer should take after recognizing
 it. Let's see an example for our templating language:
@@ -160,7 +160,7 @@ Please note that before defining any tokens, we have to define a state.
 For the tokens that cause the state transition, we call `action` to
 specify what should the lexer do. The action can be either a string, in
 which case the lexer goes to the state specified by the string, or
-`StatefulLexer::POP_STATE`, which causes the lexer to pop the current
+`AbstractStatefulLexer::POP_STATE`, which causes the lexer to pop the current
 state of the stack, essentialy going back to previous state.
 Finally, we tell the lexer in which state to start by calling `start`.
 
