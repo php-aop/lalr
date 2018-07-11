@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Aop\LALR\Parser;
 
 /**
@@ -112,7 +114,7 @@ final class Rule
     }
 
     /**
-     * Get rule precedence
+     * Get rule precedence.
      *
      * @return int|null
      */
@@ -122,7 +124,7 @@ final class Rule
     }
 
     /**
-     * Set rule precedence
+     * Set rule precedence.
      *
      * @param int|null $precedence Precedence.
      */

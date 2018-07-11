@@ -4,14 +4,14 @@ namespace Aop\LALR\Parser\LALR1;
 
 use Aop\LALR\Exception\UnexpectedTokenException;
 use Aop\LALR\Contract\TokenStreamInterface;
-use Aop\LALR\Parser\Grammar;
+use Aop\LALR\Parser\AbstractGrammar;
 use Aop\LALR\Parser\LALR1\Analysis\Analyzer;
 use Aop\LALR\Parser\ParserInterface;
 
 final class Parser implements ParserInterface
 {
     /**
-     * @var \Aop\LALR\Parser\Grammar
+     * @var \Aop\LALR\Parser\AbstractGrammar
      */
     private $grammar;
 
@@ -23,10 +23,10 @@ final class Parser implements ParserInterface
     /**
      * Constructor.
      *
-     * @param \Aop\LALR\Parser\Grammar $grammar The grammar.
-     * @param array $parseTable                 If given, the parser doesn't have to analyze the grammar.
+     * @param \Aop\LALR\Parser\AbstractGrammar $grammar The grammar.
+     * @param array $parseTable                         If given, the parser doesn't have to analyze the grammar.
      */
-    public function __construct(Grammar $grammar, array $parseTable = null)
+    public function __construct(AbstractGrammar $grammar, array $parseTable = null)
     {
         $this->grammar    = $grammar;
         $this->parseTable = $parseTable ?? (new Analyzer())->analyze($grammar)->getParseTable();

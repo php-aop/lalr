@@ -2,12 +2,12 @@
 
 namespace Aop\LALR\Parser\LALR1\Dumper;
 
-use Aop\LALR\Parser\Grammar;
+use Aop\LALR\Parser\AbstractGrammar;
 
 final class DebugTableDumper implements TableDumperInterface
 {
     /**
-     * @var \Aop\LALR\Parser\Grammar
+     * @var \Aop\LALR\Parser\AbstractGrammar
      */
     protected $grammar;
 
@@ -24,9 +24,9 @@ final class DebugTableDumper implements TableDumperInterface
     /**
      * Constructor.
      *
-     * @param \Aop\LALR\Parser\Grammar $grammar The grammar of this parse table.
+     * @param \Aop\LALR\Parser\AbstractGrammar $grammar The grammar of this parse table.
      */
-    public function __construct(Grammar $grammar)
+    public function __construct(AbstractGrammar $grammar)
     {
         $this->grammar = $grammar;
         $this->writer = new StringWriter();

@@ -260,7 +260,7 @@ echo $parser->parse($stream);
 // => 17
 ```
 
-The higher the integer passed to the `prec()` method, the higher the
+The higher the integer passed to the `precedence()` method, the higher the
 precedence of the specified operators.
 
 And we have the basic grammar for mathematical expressions in place!
@@ -313,7 +313,7 @@ This has certain use cases; for instance, one of the nonassociative
 operators in the grammar for PHP is `<`: when parsing `1 < 2 < 3`,
 the PHP parser reports a syntax error.
 
-The corresponding method in Dissect grammars is `nonassoc()`:
+The corresponding method in Dissect grammars is `nonassociative()`:
 
 ```php
 $this->operators('<', '>')->nonassoc()->prec(...);
@@ -342,7 +342,7 @@ input. That parse table is created from the grammar and, if we give the
 parser only the grammar, needs to be computed every time we instantiate
 the parser.
 
-Grammar analysis is costly; if you need the speed, a far better choice
+AbstractGrammar analysis is costly; if you need the speed, a far better choice
 would be to precompute the table beforehand (perhaps as a part of your
 build process) like this:
 
@@ -418,20 +418,20 @@ combine them any way you want:
    nonassociative). Note that Dissect doesn't report conflicts resolved
    using this technique, since they were intentionally created by the user
    and therefore are not really conflicts. Represented by the
-   constant `Grammar::OPERATORS`.
+   constant `AbstractGrammar::OPERATORS`.
 
 2. On a shift/reduce conflict, always shift. This is represented by
-   the constant `Grammar::SHIFT` and, together with the above method,
+   the constant `AbstractGrammar::SHIFT` and, together with the above method,
    is enabled by default.
 
 3. On a reduce/reduce conflict, reduce using the longer rule.
-   Represented by `Grammar::LONGER_REDUCE`. Both this and the previous
+   Represented by `AbstractGrammar::LONGER_REDUCE`. Both this and the previous
    way represent the same philosophy: take the largest bite possible.
    This is usually what the user intended to express.
 
 4. On a reduce/reduce conflict, reduce using the rule that was
    declared earlier in the grammar. Represented by
-   `Grammar::EARLIER_REDUCE`.
+   `AbstractGrammar::EARLIER_REDUCE`.
 
 To specify precisely how should Dissect resolve parse table conflicts,
 call `resolve` on your grammar:
@@ -440,9 +440,9 @@ call `resolve` on your grammar:
 $this->resolve(Grammar::SHIFT | Grammar::OPERATORS | Grammar::LONGER_REDUCE);
 ```
 
-There are two other constants: `Grammar::NONE` that forbids any
+There are two other constants: `AbstractGrammar::NONE` that forbids any
 conflicts in the grammar (even the operators-related ones) and
-`Grammar::ALL`, which is a combination of all the 4 above methods
+`AbstractGrammar::ALL`, which is a combination of all the 4 above methods
 defined simply for convenience.
 
 [twigparser]: https://github.com/fabpot/Twig/blob/master/lib/Twig/Parser.php

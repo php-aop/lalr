@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Aop\LALR\Tests\Parser;
 
 use Aop\LALR\Parser\Rule;
@@ -10,7 +12,7 @@ final class RuleTest extends TestCase
     /**
      * @test
      */
-    public function getComponentShouldReturnNullIfAskedForComponentOutOfRange()
+    public function getComponentShouldReturnNullIfAskedForComponentOutOfRange(): void
     {
         $rule = new Rule(1, 'Foo', ['x', 'y']);
 

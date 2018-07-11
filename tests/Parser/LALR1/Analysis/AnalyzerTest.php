@@ -3,9 +3,9 @@
 namespace Aop\LALR\Tests\Parser\LALR1\Analysis;
 
 use Aop\LALR\Exception\ReduceReduceConflictException;
-use Aop\LALR\Parser\Grammar;
 use Aop\LALR\Parser\LALR1\Analysis\Analyzer;
 use Aop\LALR\Parser\LALR1\Parser;
+use Aop\LALR\Tests\Stubs\Grammar;
 use PHPUnit\Framework\TestCase;
 
 final class AnalyzerTest extends TestCase
@@ -27,7 +27,8 @@ final class AnalyzerTest extends TestCase
     {
         $grammar = new Grammar();
 
-        $grammar('S')
+        $grammar
+            ->define('S')
             ->is('a', 'S', 'b')
             ->is();
 
@@ -50,19 +51,24 @@ final class AnalyzerTest extends TestCase
     {
         $grammar = new Grammar();
 
-        $grammar('S')
+        $grammar
+            ->define('S')
             ->is('A', 'B', 'C', 'D');
 
-        $grammar('A')
+        $grammar
+            ->define('A')
             ->is('a');
 
-        $grammar('B')
+        $grammar
+            ->define('B')
             ->is('b');
 
-        $grammar('C')
+        $grammar
+            ->define('C')
             ->is(/* empty */);
 
-        $grammar('D')
+        $grammar
+            ->define('D')
             ->is('d');
 
         $grammar->start('S');
@@ -107,7 +113,8 @@ final class AnalyzerTest extends TestCase
     {
         $grammar = new Grammar();
 
-        $grammar('S')
+        $grammar
+            ->define('S')
             ->is('a', 'S', 'b')
             ->is(/* empty */);
 
@@ -148,14 +155,17 @@ final class AnalyzerTest extends TestCase
     {
         $grammar = new Grammar();
 
-        $grammar('S')
+        $grammar
+            ->define('S')
             ->is('a', 'b', 'C', 'd')
             ->is('a', 'b', 'E', 'd');
 
-        $grammar('C')
+        $grammar
+            ->define('C')
             ->is(/* empty */);
 
-        $grammar('E')
+        $grammar
+            ->define('E')
             ->is(/* empty */);
 
         $grammar->start('S');
@@ -178,7 +188,8 @@ final class AnalyzerTest extends TestCase
     {
         $grammar = new Grammar();
 
-        $grammar('S')
+        $grammar
+            ->define('S')
             ->is('S', 'S', 'S')
             ->is('S', 'S')
             ->is('b');

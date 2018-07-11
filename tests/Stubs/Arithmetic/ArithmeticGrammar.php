@@ -2,13 +2,14 @@
 
 namespace Aop\LALR\Tests\Stubs\Arithmetic;
 
-use Aop\LALR\Parser\Grammar as Base;
+use Aop\LALR\Parser\AbstractGrammar;
 
-final class Grammar extends Base
+final class ArithmeticGrammar extends AbstractGrammar
 {
     public function __construct()
     {
-        $this('Expr*')
+        $this
+            ->define('Expr*')
             ->is('Expr+')
 
             ->is()
@@ -16,7 +17,8 @@ final class Grammar extends Base
                 return array();
             });
 
-        $this('Expr+')
+        $this
+            ->define('Expr+')
             ->is('Expr+', ',', 'Expr')
             ->call(function ($list, $_, $argument) {
                 $list[] = $argument;
@@ -29,13 +31,15 @@ final class Grammar extends Base
                 return array($argument);
             });
 
-        $this('Function')
+        $this
+            ->define('Function')
             ->is('Add(', 'Expr*', ')')
             ->call(function($add, $params, $_) {
                 return array_sum($params);
             });
 
-        $this('Expr')
+        $this
+            ->define('Expr')
             ->is('Function')
 
             ->is('Expr', '+', 'Expr')
@@ -68,7 +72,7 @@ final class Grammar extends Base
                 return $e;
             })
 
-            ->is('-', 'Expr')->prec(4)
+            ->is('-', 'Expr')->precedence(4)
             ->call(function ($_, $e) {
                 return -$e;
             })
@@ -78,9 +82,9 @@ final class Grammar extends Base
                 return (int)$i->getValue();
             });
 
-        $this->operators('+', '-')->left()->prec(1);
-        $this->operators('*', '/')->left()->prec(2);
-        $this->operators('**')->right()->prec(3);
+        $this->operators('+', '-')->left()->precedence(1);
+        $this->operators('*', '/')->left()->precedence(2);
+        $this->operators('**')->right()->precedence(3);
 
         $this->start('Expr');
     }

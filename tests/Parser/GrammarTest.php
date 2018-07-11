@@ -2,20 +2,20 @@
 
 namespace Aop\LALR\Tests\Parser;
 
-use Aop\LALR\Parser\Grammar;
-use Aop\LALR\Tests\Stubs\ExampleGrammar;
+use Aop\LALR\Parser\AbstractGrammar;
+use Aop\LALR\Tests\Stubs\FooGrammar;
 use PHPUnit\Framework\TestCase;
 
 final class GrammarTest extends TestCase
 {
     /**
-     * @var \Aop\LALR\Tests\Stubs\ExampleGrammar
+     * @var \Aop\LALR\Tests\Stubs\FooGrammar
      */
     private $grammar;
 
     protected function setUp()
     {
-        $this->grammar = new ExampleGrammar();
+        $this->grammar = new FooGrammar();
     }
 
     /**
@@ -35,7 +35,7 @@ final class GrammarTest extends TestCase
     public function theGrammarShouldBeAugmentedWithAStartRule()
     {
         $this->assertEquals(
-            Grammar::START_RULE_NAME,
+            AbstractGrammar::START,
             $this->grammar->getStartRule()->getName()
         );
 

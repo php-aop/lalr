@@ -24,8 +24,6 @@ final class RegexLexer extends AbstractRegexLexer
     protected function getType(string &$value): string
     {
         if (\is_numeric($value)) {
-            $value = (int) $value;
-
             return 'INT';
         }
 

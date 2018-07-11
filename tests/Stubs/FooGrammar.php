@@ -1,14 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Aop\LALR\Tests\Stubs;
 
-use Aop\LALR\Parser\Grammar;
+use Aop\LALR\Parser\AbstractGrammar;
 
-final class ExampleGrammar extends Grammar
+final class FooGrammar extends AbstractGrammar
 {
     public function __construct()
     {
-        $this('Foo')
+        $this
+            ->define('Foo')
             ->is('a', 'b', 'c')
             ->is('x', 'y', 'z');
 
