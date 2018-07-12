@@ -1,19 +1,14 @@
 <?php
 
-namespace Aop\LALR\Parser;
+declare(strict_types=1);
 
-use Aop\LALR\Contract\TokenStreamInterface;
+namespace Aop\LALR\Contract;
 
 /**
  * The parser interface.
  */
 interface ParserInterface
 {
-    /**
-     * The token type that represents an EOF.
-     */
-    public const EOF_TOKEN_TYPE = '$eof';
-
     /**
      * Parses a token stream and returns the semantical value
      * of the input.

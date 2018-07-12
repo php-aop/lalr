@@ -22,7 +22,7 @@ class ConflictException extends LogicException
      *
      * @return int
      */
-    public function getStateNumber()
+    public function getStateNumber(): int
     {
         return $this->stateNumber;
     }
@@ -32,7 +32,7 @@ class ConflictException extends LogicException
      *
      * @return \Aop\LALR\Parser\LALR1\Analysis\Automaton
      */
-    public function getAutomaton()
+    public function getAutomaton(): Automaton
     {
         return $this->automaton;
     }

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Aop\LALR\Tests\Lexer;
 
-use Aop\LALR\Parser\LALR1\Parser;
+use Aop\LALR\Contract\LexerInterface;
 use Aop\LALR\Tests\Stubs\Lexer\RegexLexer;
 use PHPUnit\Framework\TestCase;
 
@@ -30,7 +30,7 @@ final class RegexLexerTest extends TestCase
         $this->assertCount(4, $stream);
         $this->assertEquals('INT', $stream->get(0)->getType());
         $this->assertEquals('+', $stream->get(1)->getType());
-        $this->assertEquals(Parser::EOF_TOKEN_TYPE, $stream->get(3)->getType());
+        $this->assertEquals(LexerInterface::TOKEN_EOF, $stream->get(3)->getType());
     }
 
     /**

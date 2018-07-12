@@ -1,11 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Aop\LALR\Tests\Parser\LALR1\Analysis;
 
+use Aop\LALR\Contract\LexerInterface;
 use Aop\LALR\Exception\ReduceReduceConflictException;
+use Aop\LALR\Parser\LALR1\Analysis\AnalysisResult;
 use Aop\LALR\Parser\LALR1\Analysis\Analyzer;
-use Aop\LALR\Parser\LALR1\Parser;
-use Aop\LALR\Tests\Stubs\Grammar;
+use Aop\LALR\Tests\Stubs\Parser\LALR1\Analysis\Grammar;
 use PHPUnit\Framework\TestCase;
 
 final class AnalyzerTest extends TestCase
@@ -27,12 +30,7 @@ final class AnalyzerTest extends TestCase
     {
         $grammar = new Grammar();
 
-        $grammar
-            ->define('S')
-            ->is('a', 'S', 'b')
-            ->is();
-
-        $grammar->start('S');
+        $grammar->buildAutomatonShouldBeCorrectlyBuiltGrammar();
 
         $result = $this->getAnalysisResult($grammar);
         $table  = $result->getAutomaton()->getTransitionTable();
@@ -47,36 +45,16 @@ final class AnalyzerTest extends TestCase
     /**
      * @test
      */
-    public function lookaheadShouldBeCorrectlyPumped()
+    public function lookaheadShouldBeCorrectlyPumped(): void
     {
         $grammar = new Grammar();
 
-        $grammar
-            ->define('S')
-            ->is('A', 'B', 'C', 'D');
-
-        $grammar
-            ->define('A')
-            ->is('a');
-
-        $grammar
-            ->define('B')
-            ->is('b');
-
-        $grammar
-            ->define('C')
-            ->is(/* empty */);
-
-        $grammar
-            ->define('D')
-            ->is('d');
-
-        $grammar->start('S');
+        $grammar->buildLookaheadShouldBeCorrectlyPumpedGrammar();
 
         $automaton = $this->getAnalysisResult($grammar)->getAutomaton();
 
         $this->assertEquals(
-            [Parser::EOF_TOKEN_TYPE],
+            [LexerInterface::TOKEN_EOF],
             $automaton->getState(1)->get(0, 1)->getLookahead()
         );
 
@@ -96,12 +74,12 @@ final class AnalyzerTest extends TestCase
         );
 
         $this->assertEquals(
-            [Parser::EOF_TOKEN_TYPE],
+            [LexerInterface::TOKEN_EOF],
             $automaton->getState(7)->get(1, 4)->getLookahead()
         );
 
         $this->assertEquals(
-            [Parser::EOF_TOKEN_TYPE],
+            [LexerInterface::TOKEN_EOF],
             $automaton->getState(8)->get(5, 1)->getLookahead()
         );
     }
@@ -109,16 +87,11 @@ final class AnalyzerTest extends TestCase
     /**
      * @test
      */
-    public function parseTableShouldBeCorrectlyBuilt()
+    public function parseTableShouldBeCorrectlyBuilt(): void
     {
         $grammar = new Grammar();
 
-        $grammar
-            ->define('S')
-            ->is('a', 'S', 'b')
-            ->is(/* empty */);
-
-        $grammar->start('S');
+        $grammar->buildParseTableShouldBeCorrectlyBuiltGrammar();
 
         $table = $this->getAnalysisResult($grammar)->getParseTable();
 
@@ -126,10 +99,10 @@ final class AnalyzerTest extends TestCase
         $this->assertEquals(2, $table['action'][0]['a']);
 
         // reduce(S -> )
-        $this->assertEquals(-2, $table['action'][0][Parser::EOF_TOKEN_TYPE]);
+        $this->assertEquals(-2, $table['action'][0][LexerInterface::TOKEN_EOF]);
 
         // accept
-        $this->assertEquals(0, $table['action'][1][Parser::EOF_TOKEN_TYPE]);
+        $this->assertEquals(0, $table['action'][1][LexerInterface::TOKEN_EOF]);
 
         // shift(2)
         $this->assertEquals(2, $table['action'][2]['a']);
@@ -142,7 +115,7 @@ final class AnalyzerTest extends TestCase
 
         // reduce(S -> a S b)
         $this->assertEquals(-1, $table['action'][4]['b']);
-        $this->assertEquals(-1, $table['action'][4][Parser::EOF_TOKEN_TYPE]);
+        $this->assertEquals(-1, $table['action'][4][LexerInterface::TOKEN_EOF]);
 
         $this->assertEquals(1, $table['goto'][0]['S']);
         $this->assertEquals(3, $table['goto'][2]['S']);
@@ -151,27 +124,14 @@ final class AnalyzerTest extends TestCase
     /**
      * @test
      */
-    public function unexpectedConflictsShouldThrowAnException()
+    public function unexpectedConflictsShouldThrowAnException(): void
     {
         $grammar = new Grammar();
 
-        $grammar
-            ->define('S')
-            ->is('a', 'b', 'C', 'd')
-            ->is('a', 'b', 'E', 'd');
-
-        $grammar
-            ->define('C')
-            ->is(/* empty */);
-
-        $grammar
-            ->define('E')
-            ->is(/* empty */);
-
-        $grammar->start('S');
+        $grammar->buildUnexpectedConflictsShouldThrowAnExceptionGrammar();
 
         try {
-            $result = $this->getAnalysisResult($grammar);
+            $this->getAnalysisResult($grammar);
             $this->fail('Expected an exception warning of a reduce/reduce conflict.');
         } catch (ReduceReduceConflictException $e) {
             $this->assertEquals(3, $e->getStateNumber());
@@ -184,18 +144,11 @@ final class AnalyzerTest extends TestCase
     /**
      * @test
      */
-    public function expectedConflictsShouldBeRecorded()
+    public function expectedConflictsShouldBeRecorded(): void
     {
         $grammar = new Grammar();
 
-        $grammar
-            ->define('S')
-            ->is('S', 'S', 'S')
-            ->is('S', 'S')
-            ->is('b');
-
-        $grammar->resolve(Grammar::ALL);
-        $grammar->start('S');
+        $grammar->buildExpectedConflictsShouldBeRecordedGrammar();
 
         $conflicts = $this->getAnalysisResult($grammar)->getResolvedConflicts();
 
@@ -218,7 +171,7 @@ final class AnalyzerTest extends TestCase
         $conflict = $conflicts[2];
 
         $this->assertEquals(4, $conflict['state']);
-        $this->assertEquals(Parser::EOF_TOKEN_TYPE, $conflict['lookahead']);
+        $this->assertEquals(LexerInterface::TOKEN_EOF, $conflict['lookahead']);
         $this->assertEquals(1, $conflict['rules'][0]->getNumber());
         $this->assertEquals(2, $conflict['rules'][1]->getNumber());
         $this->assertEquals(Grammar::LONGER_REDUCE, $conflict['resolution']);
@@ -231,7 +184,7 @@ final class AnalyzerTest extends TestCase
         $this->assertEquals(Grammar::SHIFT, $conflict['resolution']);
     }
 
-    private function getAnalysisResult(Grammar $grammar)
+    private function getAnalysisResult(Grammar $grammar): AnalysisResult
     {
         return $this->analyzer->analyze($grammar);
     }

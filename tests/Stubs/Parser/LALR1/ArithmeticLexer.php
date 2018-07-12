@@ -1,10 +1,12 @@
 <?php
 
-namespace Aop\LALR\Tests\Stubs\Arithmetic;
+declare(strict_types=1);
+
+namespace Aop\LALR\Tests\Stubs\Parser\LALR1;
 
 use Aop\LALR\Lexer\AbstractStatelessLexer;
 
-final class StatelessLexer extends AbstractStatelessLexer
+final class ArithmeticLexer extends AbstractStatelessLexer
 {
     public function __construct()
     {

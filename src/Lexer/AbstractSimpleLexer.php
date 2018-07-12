@@ -8,7 +8,6 @@ use Aop\LALR\Exception\RecognitionException;
 use Aop\LALR\Contract\LexerInterface;
 use Aop\LALR\Contract\TokenInterface;
 use Aop\LALR\Contract\TokenStreamInterface;
-use Aop\LALR\Parser\LALR1\Parser;
 
 use function Aop\LALR\Functions\utf8_strlen;
 use function Aop\LALR\Functions\substring;
@@ -65,7 +64,7 @@ abstract class AbstractSimpleLexer implements LexerInterface
             throw new RecognitionException($string, $linePosition, $this->line);
         }
 
-        $tokens[] = new Token(Parser::EOF_TOKEN_TYPE, '', $this->line);
+        $tokens[] = new Token(LexerInterface::TOKEN_EOF, '', $this->line);
 
         return new TokenStream($tokens);
     }

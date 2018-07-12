@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Aop\LALR\Tests\Stubs;
+namespace Aop\LALR\Tests\Stubs\Parser;
 
 use Aop\LALR\Parser\AbstractGrammar;
 

@@ -2,11 +2,11 @@
 
 namespace Aop\LALR\Parser\LALR1\Analysis;
 
+use Aop\LALR\Contract\LexerInterface;
 use Aop\LALR\Exception\ReduceReduceConflictException;
 use Aop\LALR\Exception\ShiftReduceConflictException;
 use Aop\LALR\Parser\AbstractGrammar;
 use Aop\LALR\Parser\LALR1\Analysis\KernelSet\KernelSet;
-use Aop\LALR\Parser\LALR1\Parser;
 
 use function Aop\LALR\Functions\has_diff;
 use function Aop\LALR\Functions\union;
@@ -71,7 +71,7 @@ final class Analyzer
 
         // the initial item automatically has EOF
         // as its lookahead
-        $pumpings[] = [$initialItem, [Parser::EOF_TOKEN_TYPE]];
+        $pumpings[] = [$initialItem, [LexerInterface::TOKEN_EOF]];
 
         $queue->enqueue($state);
         $automaton->addState($state);

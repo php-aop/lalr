@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Aop\LALR\Tests\Lexer;
 
+use Aop\LALR\Contract\LexerInterface;
 use Aop\LALR\Exception\RecognitionException;
-use Aop\LALR\Parser\LALR1\Parser;
 use Aop\LALR\Tests\Stubs\Lexer\SimpleLexer;
 use PHPUnit\Framework\TestCase;
 
@@ -52,7 +52,7 @@ final class AbstractLexerTest extends TestCase
         $stream = $this->lexer->lex('abc');
         $stream->seek(3);
 
-        $this->assertEquals(Parser::EOF_TOKEN_TYPE, $stream->getCurrentToken()->getType());
+        $this->assertEquals(LexerInterface::TOKEN_EOF, $stream->getCurrentToken()->getType());
         $this->assertEquals(1, $stream->getCurrentToken()->getLine());
     }
 

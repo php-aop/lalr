@@ -1,7 +1,10 @@
 <?php
 
-namespace Aop\LALR\Tests\Stubs\Arithmetic;
+declare(strict_types=1);
 
+namespace Aop\LALR\Tests\Stubs\Parser\LALR1;
+
+use Aop\LALR\Contract\TokenInterface;
 use Aop\LALR\Parser\AbstractGrammar;
 
 final class ArithmeticGrammar extends AbstractGrammar
@@ -78,7 +81,7 @@ final class ArithmeticGrammar extends AbstractGrammar
             })
 
             ->is('INT')
-            ->call(function ($i) {
+            ->call(function (TokenInterface $i) {
                 return (int)$i->getValue();
             });
 

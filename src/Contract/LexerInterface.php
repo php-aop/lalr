@@ -10,6 +10,11 @@ namespace Aop\LALR\Contract;
 interface LexerInterface
 {
     /**
+     * The token type that represents an EOF.
+     */
+    public const TOKEN_EOF = '$eof';
+
+    /**
      * Lexes the given string, returning a token stream.
      *
      * @param string $string The string to lex.

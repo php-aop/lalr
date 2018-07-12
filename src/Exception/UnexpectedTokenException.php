@@ -1,17 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Aop\LALR\Exception;
 
 use Aop\LALR\Contract\TokenInterface;
 
 class UnexpectedTokenException extends RuntimeException
 {
-    private const MESSAGE = <<<EOT
-Unexpected %s at line %d.
-
-Expected one of %s.
-EOT;
-
     /**
      * @var \Aop\LALR\Contract\TokenInterface
      */
@@ -26,20 +22,16 @@ EOT;
      * Constructor.
      *
      * @param \Aop\LALR\Contract\TokenInterface $token The unexpected token.
-     * @param string[] $expected                    The expected token types.
+     * @param string[] $expected                       The expected token types.
      */
     public function __construct(TokenInterface $token, array $expected)
     {
         $this->token    = $token;
         $this->expected = $expected;
-        $info           = ($token->getValue() !== $token->getType()) ? sprintf('%s (%s)', $token->getValue(), $token->getType()) : $token->getType();
+        $tokenInfo      = ($token->getValue() !== $token->getType()) ? sprintf('%s (%s)', $token->getValue(), $token->getType()) : $token->getType();
+        $message        = sprintf('Unexpected "%s" at line %d. Expected one of "%s".', $tokenInfo, $token->getLine(), implode('", "', $expected));
 
-        parent::__construct(sprintf(
-            self::MESSAGE,
-            $info,
-            $token->getLine(),
-            implode(', ', $expected)
-        ));
+        parent::__construct($message);
     }
 
     /**

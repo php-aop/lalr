@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Aop\LALR\Parser\LALR1;
 
+use Aop\LALR\Contract\ParserInterface;
 use Aop\LALR\Exception\UnexpectedTokenException;
 use Aop\LALR\Contract\TokenStreamInterface;
 use Aop\LALR\Parser\AbstractGrammar;
 use Aop\LALR\Parser\LALR1\Analysis\Analyzer;
-use Aop\LALR\Parser\ParserInterface;
 
 final class Parser implements ParserInterface
 {
@@ -18,18 +20,25 @@ final class Parser implements ParserInterface
     /**
      * @var array
      */
-    private $parseTable;
+    private $table;
 
     /**
      * Constructor.
      *
      * @param \Aop\LALR\Parser\AbstractGrammar $grammar The grammar.
-     * @param array $parseTable                         If given, the parser doesn't have to analyze the grammar.
+     * @param array $table                              If given, the parser doesn't have to analyze the grammar.
      */
-    public function __construct(AbstractGrammar $grammar, array $parseTable = null)
+    public function __construct(AbstractGrammar $grammar, array $table = null)
     {
-        $this->grammar    = $grammar;
-        $this->parseTable = $parseTable ?? (new Analyzer())->analyze($grammar)->getParseTable();
+        $this->grammar = $grammar;
+
+        if (null === $table) {
+            $analyzer       = new Analyzer();
+            $analysisResult = $analyzer->analyze($grammar);
+            $table          = $analysisResult->getParseTable();
+        }
+
+        $this->table = $table;
     }
 
     /**
@@ -37,8 +46,9 @@ final class Parser implements ParserInterface
      */
     public function parse(TokenStreamInterface $stream)
     {
-        $stateStack = [$currentState = 0];
-        $args       = [];
+        $currentState = 0;
+        $stateStack   = [$currentState];
+        $args         = [];
 
         /**
          * @var \Aop\LALR\Contract\TokenInterface $token
@@ -49,17 +59,18 @@ final class Parser implements ParserInterface
 
                 $type = $token->getType();
 
-                if (!isset($this->parseTable['action'][$currentState][$type])) {
-                    throw new UnexpectedTokenException($token, array_keys($this->parseTable['action'][$currentState]));
+                if (!isset($this->table['action'][$currentState][$type])) {
+                    throw new UnexpectedTokenException($token, array_keys($this->table['action'][$currentState]));
                 }
 
-                $action = $this->parseTable['action'][$currentState][$type];
+                $action = $this->table['action'][$currentState][$type];
 
                 if ($action > 0) {
                     // shift
 
                     $args[]       = $token;
-                    $stateStack[] = $currentState = $action;
+                    $currentState = $action;
+                    $stateStack[] = $currentState;
 
                     break;
                 }
@@ -67,23 +78,19 @@ final class Parser implements ParserInterface
                 if ($action < 0) {
                     // reduce
                     $rule     = $this->grammar->getRule(-$action);
-                    $popCount = count($rule->getComponents());
+                    $popCount = \count($rule->getComponents());
 
                     $newArgs = $args;
 
                     if ($popCount > 0) {
-                        array_splice($stateStack, -$popCount);
-                        $newArgs = array_splice($args, -$popCount);
+                        \array_splice($stateStack, -$popCount);
+                        $newArgs = \array_splice($args, -$popCount);
                     }
 
-                    if ($callback = $rule->getCallback()) {
-                        $args[] = call_user_func_array($callback, $newArgs);
-                    } else {
-                        $args[] = $newArgs[0];
-                    }
-
-                    $state        = $stateStack[count($stateStack) - 1];
-                    $stateStack[] = $currentState = $this->parseTable['goto'][$state][$rule->getName()];
+                    $args[]       = ($callback = $rule->getCallback()) ? \call_user_func_array($callback, $newArgs) : $newArgs[0];
+                    $state        = $stateStack[\count($stateStack) - 1];
+                    $currentState = $this->table['goto'][$state][$rule->getName()];
+                    $stateStack[] = $currentState;
 
                     continue;
                 }

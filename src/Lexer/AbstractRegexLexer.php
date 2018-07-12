@@ -6,7 +6,6 @@ namespace Aop\LALR\Lexer;
 
 use Aop\LALR\Contract\LexerInterface;
 use Aop\LALR\Contract\TokenStreamInterface;
-use Aop\LALR\Parser\LALR1\Parser;
 
 /**
  * Highly performant, less user friendly lexer based on Doctrine's lexer.
@@ -49,7 +48,7 @@ abstract class AbstractRegexLexer implements LexerInterface
             $tokens[] = new Token($type, $value, $line);
         }
 
-        $tokens[] = new Token(Parser::EOF_TOKEN_TYPE, '', $line);
+        $tokens[] = new Token(LexerInterface::TOKEN_EOF, '', $line);
 
         return new TokenStream($tokens);
     }
