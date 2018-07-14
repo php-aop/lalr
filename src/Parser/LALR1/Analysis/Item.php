@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Aop\LALR\Parser\LALR1\Analysis;
 
 use Aop\LALR\Parser\Rule;
@@ -31,22 +33,22 @@ final class Item
     /**
      * @var \Aop\LALR\Parser\Rule
      */
-    protected $rule;
+    private $rule;
 
     /**
      * @var int
      */
-    protected $dotIndex;
+    private $dotIndex;
 
     /**
      * @var array
      */
-    protected $lookahead = [];
+    private $lookahead = [];
 
     /**
      * @var array
      */
-    protected $connected = [];
+    private $connected = [];
 
     /**
      * Constructor.
@@ -117,7 +119,7 @@ final class Item
     /**
      * Connects two items with a lookahead pumping channel.
      *
-     * @param \Aop\LALR\Parser\LALR1\Analysis\Item $i The item.
+     * @param \Aop\LALR\Parser\LALR1\Analysis\Item $item The item.
      */
     public function connect(Item $item): void
     {
@@ -132,7 +134,7 @@ final class Item
      */
     public function pump(string $lookahead): void
     {
-        if (!\in_array($lookahead, $this->lookahead)) {
+        if (!\in_array($lookahead, $this->lookahead, true)) {
             $this->lookahead[] = $lookahead;
 
             foreach ($this->connected as $item) {
@@ -144,12 +146,12 @@ final class Item
     /**
      * Pumps several lookahead tokens.
      *
-     * @param array $lookahead The lookahead tokens.
+     * @param array $lookaheads The lookahead tokens.
      */
-    public function pumpAll(array $lookahead): void
+    public function pumpAll(array $lookaheads): void
     {
-        foreach ($lookahead as $l) {
-            $this->pump($l);
+        foreach ($lookaheads as $lookahead) {
+            $this->pump($lookahead);
         }
     }
 

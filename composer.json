@@ -27,7 +27,8 @@
             "src/Functions/has_diff.php",
             "src/Functions/substring.php",
             "src/Functions/union.php",
-            "src/Functions/utf8_strlen.php"
+            "src/Functions/utf8_strlen.php",
+            "src/Functions/hash_state_transitions.php"
         ],
         "psr-4": {
             "Aop\\LALR\\": "src/"

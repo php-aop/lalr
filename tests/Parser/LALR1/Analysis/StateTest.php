@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Aop\LALR\Tests\Parser\LALR1\Analysis;
 
 use Aop\LALR\Parser\LALR1\Analysis\Item;
@@ -12,7 +14,7 @@ final class StateTest extends TestCase
     /**
      * @test
      */
-    public function stateShouldKeepItemsByRuleNumberAndPosition()
+    public function stateShouldKeepItemsByRuleNumberAndPosition(): void
     {
         $item1 = new Item(new Rule(1, 'E', array('E', '+', 'T')), 0);
         $state = new State(0, array($item1));

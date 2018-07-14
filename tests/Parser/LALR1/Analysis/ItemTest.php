@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Aop\LALR\Tests\Parser\LALR1\Analysis;
 
 use Aop\LALR\Parser\LALR1\Analysis\Item;
@@ -11,7 +13,7 @@ final class ItemTest extends TestCase
     /**
      * @test
      */
-    public function getActiveComponentShouldReturnTheComponentAboutToBeEncountered()
+    public function getActiveComponentShouldReturnTheComponentAboutToBeEncountered(): void
     {
         $rule = new Rule(1, 'A', ['a', 'b', 'c']);
         $item = new Item($rule, 1);
@@ -22,7 +24,7 @@ final class ItemTest extends TestCase
     /**
      * @test
      */
-    public function itemShouldBeAReduceItemIfAllComponentsHaveBeenEncountered()
+    public function itemShouldBeAReduceItemIfAllComponentsHaveBeenEncountered(): void
     {
         $item = new Item(new Rule(1, 'A', ['a', 'b', 'c']), 1);
         $this->assertFalse($item->isReduceItem());
@@ -34,7 +36,7 @@ final class ItemTest extends TestCase
     /**
      * @test
      */
-    public function itemShouldPumpLookaheadIntoConnectedItems()
+    public function itemShouldPumpLookaheadIntoConnectedItems(): void
     {
         $item1 = new Item(new Rule(1, 'A', ['a', 'b', 'c']), 1);
         $item2 = new Item(new Rule(1, 'A', ['a', 'b', 'c']), 2);
@@ -48,7 +50,7 @@ final class ItemTest extends TestCase
     /**
      * @test
      */
-    public function itemShouldPumpTheSameLookaheadOnlyOnce()
+    public function itemShouldPumpTheSameLookaheadOnlyOnce(): void
     {
         $item1 = new Item(new Rule(1, 'A', ['a', 'b', 'c']), 1);
         $item2 = new Item(new Rule(1, 'A', ['a', 'b', 'c']), 1);
@@ -67,7 +69,7 @@ final class ItemTest extends TestCase
     /**
      * @test
      */
-    public function getUnrecognizedComponentsShouldReturnAllComponentAfterTheDottedOne()
+    public function getUnrecognizedComponentsShouldReturnAllComponentAfterTheDottedOne(): void
     {
         $rule = new Rule(1, 'A', ['a', 'b', 'c']);
         $item = new Item($rule, 1);

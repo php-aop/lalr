@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Aop\LALR\Parser\LALR1\Analysis;
 
 /**
@@ -25,7 +27,7 @@ final class State
     /**
      * Constructor.
      *
-     * @param int $number  The number identifying this state.
+     * @param int $number                                   The number identifying this state.
      * @param \Aop\LALR\Parser\LALR1\Analysis\Item[] $items The initial items of this state.
      */
     public function __construct(int $number, array $items)
@@ -57,7 +59,7 @@ final class State
      *
      * @return \Aop\LALR\Parser\LALR1\Analysis\Item The item.
      */
-    public function get($ruleNumber, $dotIndex): Item
+    public function get(int $ruleNumber, int $dotIndex): Item
     {
         return $this->itemMap[$ruleNumber][$dotIndex];
     }

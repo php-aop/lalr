@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Aop\LALR\Parser\LALR1\Analysis;
 
 /**
@@ -9,12 +11,12 @@ namespace Aop\LALR\Parser\LALR1\Analysis;
 final class Automaton
 {
     /**
-     * @var array
+     * @var \Aop\LALR\Parser\LALR1\Analysis\State[]
      */
     private $states = [];
 
     /**
-     * @var array
+     * @var int[]
      */
     private $transitionTable = [];
 
@@ -47,7 +49,7 @@ final class Automaton
      *
      * @return \Aop\LALR\Parser\LALR1\Analysis\State The requested state.
      */
-    public function getState($number): State
+    public function getState(int $number): State
     {
         return $this->states[$number];
     }
@@ -67,7 +69,7 @@ final class Automaton
     /**
      * Returns all states in this FSA.
      *
-     * @return array The states of this FSA.
+     * @return \Aop\LALR\Parser\LALR1\Analysis\State[] The states of this FSA.
      */
     public function getStates(): array
     {

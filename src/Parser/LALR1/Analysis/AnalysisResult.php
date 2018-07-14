@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Aop\LALR\Parser\LALR1\Analysis;
 
 final class AnalysisResult
@@ -22,15 +24,15 @@ final class AnalysisResult
     /**
      * Constructor.
      *
-     * @param array $parseTable The parse table.
-     * @param \Aop\LALR\Parser\LALR1\Analysis\Automaton $automaton
-     * @param array $conflicts  An array of conflicts resolved during parse table
-     *                          construction.
+     * @param \Aop\LALR\Parser\LALR1\Analysis\Automaton $automaton Automaton.
+     * @param array $parseTable                                    The parse table.
+     * @param array $conflicts                                     An array of conflicts resolved during parse table
+     *                                                             construction.
      */
-    public function __construct(array $parseTable, Automaton $automaton, array $conflicts)
+    public function __construct(Automaton $automaton, array $parseTable, array $conflicts)
     {
-        $this->parseTable        = $parseTable;
         $this->automaton         = $automaton;
+        $this->parseTable        = $parseTable;
         $this->resolvedConflicts = $conflicts;
     }
 

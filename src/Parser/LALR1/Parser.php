@@ -10,6 +10,9 @@ use Aop\LALR\Contract\TokenStreamInterface;
 use Aop\LALR\Parser\AbstractGrammar;
 use Aop\LALR\Parser\LALR1\Analysis\Analyzer;
 
+/**
+ * LALR(1) parser implementation.
+ */
 final class Parser implements ParserInterface
 {
     /**

@@ -6,10 +6,10 @@ use Aop\LALR\Contract\LexerInterface;
 use Aop\LALR\Exception\ReduceReduceConflictException;
 use Aop\LALR\Exception\ShiftReduceConflictException;
 use Aop\LALR\Parser\AbstractGrammar;
-use Aop\LALR\Parser\LALR1\Analysis\KernelSet\KernelSet;
 
 use function Aop\LALR\Functions\has_diff;
 use function Aop\LALR\Functions\union;
+
 
 /**
  * Performs a grammar analysis and returns
@@ -22,14 +22,14 @@ final class Analyzer
      *
      * @param \Aop\LALR\Parser\AbstractGrammar $grammar The grammar to analyse.
      *
-     * @return \Aop\LALR\Parser\LALR1\Analysis\AnalysisResult The result ofthe analysis.
+     * @return \Aop\LALR\Parser\LALR1\Analysis\AnalysisResult The result of the analysis.
      */
-    public function analyze(AbstractGrammar $grammar)
+    public function analyze(AbstractGrammar $grammar): AnalysisResult
     {
         $automaton = $this->buildAutomaton($grammar);
         list($parseTable, $conflicts) = $this->buildParseTable($automaton, $grammar);
 
-        return new AnalysisResult($parseTable, $automaton, $conflicts);
+        return new AnalysisResult($automaton, $parseTable, $conflicts);
     }
 
     /**
@@ -39,7 +39,7 @@ final class Analyzer
      *
      * @return \Aop\LALR\Parser\LALR1\Analysis\Automaton The resulting automaton.
      */
-    protected function buildAutomaton(AbstractGrammar $grammar)
+    private function buildAutomaton(AbstractGrammar $grammar): Automaton
     {
         // the eventual automaton
         $automaton = new Automaton();
@@ -48,7 +48,7 @@ final class Analyzer
         $queue = new \SplQueue();
 
         // the BST for state kernels
-        $kernelSet = new KernelSet();
+        $kernelSet = new \Aop\LALR\Parser\LALR1\Analysis\TransitionsTree();
 
         // rules grouped by their name
         $groupedRules = $grammar->getGroupedRules();
@@ -239,11 +239,11 @@ final class Analyzer
     /**
      * Encodes the handle-finding FSA as a LR parse table.
      *
-     * @param \Dissect\Parser\LALR1\Analysis\Automaton $automaton
+     * @param \Aop\LALR\Parser\LALR1\Analysis\Automaton $automaton
      *
      * @return array The parse table.
      */
-    protected function buildParseTable(Automaton $automaton, AbstractGrammar $grammar)
+    protected function buildParseTable(Automaton $automaton, AbstractGrammar $grammar): array
     {
         $conflictsMode = $grammar->getConflictsMode();
         $conflicts     = [];
@@ -461,7 +461,7 @@ final class Analyzer
      *
      * @return array Calculated FIRST sets.
      */
-    protected function calculateFirstSets(array $rules)
+    protected function calculateFirstSets(array $rules): array 
     {
         // initialize
         $firstSets = [];

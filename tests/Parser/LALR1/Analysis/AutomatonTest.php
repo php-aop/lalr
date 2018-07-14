@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Aop\LALR\Tests\Parser\LALR1\Analysis;
 
 use Aop\LALR\Parser\LALR1\Analysis\Automaton;
@@ -13,9 +15,10 @@ final class AutomatonTest extends TestCase
      */
     private $automaton;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->automaton = new Automaton();
+
         $this->automaton->addState(new State(0, array()));
         $this->automaton->addState(new State(1, array()));
     }
@@ -23,7 +26,7 @@ final class AutomatonTest extends TestCase
     /**
      * @test
      */
-    public function addingATransitionShouldBeVisibleInTheTransitionTable()
+    public function addingATransitionShouldBeVisibleInTheTransitionTable(): void
     {
         $this->automaton->addTransition(0, 'a', 1);
         $table = $this->automaton->getTransitionTable();
@@ -34,7 +37,7 @@ final class AutomatonTest extends TestCase
     /**
      * @test
      */
-    public function aNewStateShouldBeIdentifiedByItsNumber()
+    public function aNewStateShouldBeIdentifiedByItsNumber(): void
     {
         $state = new State(2, array());
         $this->automaton->addState($state);
