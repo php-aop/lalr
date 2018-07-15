@@ -83,4 +83,17 @@ final class State
     {
         return $this->items;
     }
+
+    /**
+     * Create state for single item.
+     *
+     * @param int $number                                The number identifying this state.
+     * @param \Aop\LALR\Parser\LALR1\Analysis\Item $item The initial item of this state.
+     *
+     * @return \Aop\LALR\Parser\LALR1\Analysis\State
+     */
+    public static function forItem(int $number, Item $item): State
+    {
+        return new State($number, [$item]);
+    }
 }

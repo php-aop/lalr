@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Aop\LALR\Parser\LALR1\Analysis;
 
+use Aop\LALR\Exception\LogicException;
 use function Aop\LALR\Functions\hash_state_transitions;
 
 /**
@@ -94,5 +95,17 @@ final class TransitionsTree
 
             return $current->next;
         }
+    }
+
+    public function initialize(Item $item): int
+    {
+        if (null === $this->root) {
+
+            return $this->insert([
+                [$item->getRule()->getNumber(), $item->getDotIndex()],
+            ]);
+        }
+
+        throw new LogicException('Tree is already initialized.');
     }
 }
