@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Aop\LALR\Parser\LALR1\Analysis;
 
+use Aop\LALR\Cache\ArrayCache;
+use Aop\LALR\Contract\CacheInterface;
 use Aop\LALR\Contract\LexerInterface;
 use Aop\LALR\Exception\LogicException;
 use Aop\LALR\Exception\ReduceReduceConflictException;
@@ -20,6 +22,16 @@ use function Aop\LALR\Functions\union;
 final class Analyzer
 {
     /**
+     * @var \Aop\LALR\Contract\CacheInterface $cache
+     */
+    private $cache;
+
+    public function __construct(CacheInterface $cache = null)
+    {
+        $this->cache = $cache ?? new ArrayCache();
+    }
+
+    /**
      * Performs a grammar analysis.
      *
      * @param \Aop\LALR\Parser\AbstractGrammar $grammar The grammar to analyse.
@@ -28,10 +40,17 @@ final class Analyzer
      */
     public function analyze(AbstractGrammar $grammar): AnalysisResult
     {
-        $automaton = $this->buildAutomaton($grammar);
-        [$parseTable, $conflicts] = $this->buildParseTable($automaton, $grammar);
+        if ($this->cache->has($grammar)) {
+            return $this->cache->get($grammar);
+        }
 
-        return new AnalysisResult($automaton, $parseTable, $conflicts);
+        $automaton                = $this->buildAutomaton($grammar);
+        [$parseTable, $conflicts] = $this->buildParseTable($automaton, $grammar);
+        $result                   = new AnalysisResult($automaton, $parseTable, $conflicts);
+
+        $this->cache->set($grammar, $result);
+
+        return $result;
     }
 
     /**

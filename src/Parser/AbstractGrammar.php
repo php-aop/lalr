@@ -4,13 +4,14 @@ declare(strict_types=1);
 
 namespace Aop\LALR\Parser;
 
+use Aop\LALR\Contract\GrammarInterface;
 use Aop\LALR\Exception\LogicException;
 use Aop\LALR\Exception\OutOfBoundsException;
 
 /**
  * Represents a context-free grammar.
  */
-abstract class AbstractGrammar
+abstract class AbstractGrammar implements GrammarInterface
 {
     /**
      * The name given to the rule the grammar is augmented with

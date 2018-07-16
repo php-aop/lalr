@@ -29,19 +29,13 @@ final class Parser implements ParserInterface
      * Constructor.
      *
      * @param \Aop\LALR\Parser\AbstractGrammar $grammar The grammar.
-     * @param array $table                              If given, the parser doesn't have to analyze the grammar.
+     * @param \Aop\LALR\Parser\LALR1\Analysis\Analyzer $analyzer
      */
-    public function __construct(AbstractGrammar $grammar, array $table = null)
+    public function __construct(AbstractGrammar $grammar, Analyzer $analyzer = null)
     {
+        $analyzer      = $analyzer ?? new Analyzer();
         $this->grammar = $grammar;
-
-        if (null === $table) {
-            $analyzer       = new Analyzer();
-            $analysisResult = $analyzer->analyze($grammar);
-            $table          = $analysisResult->getParseTable();
-        }
-
-        $this->table = $table;
+        $this->table   = $analyzer->analyze($grammar)->getParseTable();
     }
 
     /**

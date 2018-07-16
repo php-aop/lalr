@@ -2,7 +2,7 @@
 
 namespace Aop\LALR\Parser\LALR1\Dumper;
 
-use Aop\LALR\Parser\LALR1\Analysis\Automaton;
+use Aop\LALR\Contract\AutomatonInterface;
 use Aop\LALR\Parser\LALR1\Analysis\Item;
 use Aop\LALR\Parser\LALR1\Analysis\State;
 
@@ -17,9 +17,9 @@ final class AutomatonDumper
     /**
      * Constructor.
      *
-     * @param \Aop\LALR\Parser\LALR1\Analysis\Automaton $automaton
+     * @param \Aop\LALR\Contract\AutomatonInterface $automaton
      */
-    public function __construct(Automaton $automaton)
+    public function __construct(AutomatonInterface $automaton)
     {
         $this->automaton = $automaton;
     }

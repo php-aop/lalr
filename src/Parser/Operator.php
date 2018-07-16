@@ -4,7 +4,12 @@ declare(strict_types=1);
 
 namespace Aop\LALR\Parser;
 
-final class Operator
+use Aop\LALR\Contract\OperatorInterface;
+
+/**
+ * Default implementation of operator in context-free gramar.
+ */
+final class Operator implements OperatorInterface
 {
     /**
      * @var string
@@ -29,9 +34,7 @@ final class Operator
     }
 
     /**
-     * Get operator name/symbol.
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function getName(): string
     {
@@ -39,9 +42,7 @@ final class Operator
     }
 
     /**
-     * Get operator associativity.
-     *
-     * @return int
+     * {@inheritdoc}
      */
     public function getAssociativity(): int
     {
@@ -49,9 +50,7 @@ final class Operator
     }
 
     /**
-     * Get operator precedence.
-     *
-     * @return int
+     * {@inheritdoc}
      */
     public function getPrecedence(): int
     {

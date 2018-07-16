@@ -4,11 +4,12 @@ declare(strict_types=1);
 
 namespace Aop\LALR\Parser\LALR1\Analysis;
 
+use Aop\LALR\Contract\AutomatonInterface;
+
 /**
- * A finite-state automaton for recognizing
- * grammar productions.
+ * Default \Aop\LALR\Contract\AutomatonInterface implementation
  */
-final class Automaton
+final class Automaton implements AutomatonInterface
 {
     /**
      * @var \Aop\LALR\Parser\LALR1\Analysis\State[]
@@ -19,6 +20,38 @@ final class Automaton
      * @var int[]
      */
     private $transitionTable = [];
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getState(int $number): State
+    {
+        return $this->states[$number];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function hasState(int $number): bool
+    {
+        return isset($this->states[$number]);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getStates(): array
+    {
+        return $this->states;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getTransitionTable(): array
+    {
+        return $this->transitionTable;
+    }
 
     /**
      * Adds a new automaton state.
@@ -40,49 +73,5 @@ final class Automaton
     public function addTransition(int $origin, string $label, int $dest): void
     {
         $this->transitionTable[$origin][$label] = $dest;
-    }
-
-    /**
-     * Returns a state by its number.
-     *
-     * @param int $number The state number.
-     *
-     * @return \Aop\LALR\Parser\LALR1\Analysis\State The requested state.
-     */
-    public function getState(int $number): State
-    {
-        return $this->states[$number];
-    }
-
-    /**
-     * Does this automaton have a state identified by $number?
-     *
-     * @param int $number The state number.
-     *
-     * @return boolean
-     */
-    public function hasState(int $number): bool
-    {
-        return isset($this->states[$number]);
-    }
-
-    /**
-     * Returns all states in this FSA.
-     *
-     * @return \Aop\LALR\Parser\LALR1\Analysis\State[] The states of this FSA.
-     */
-    public function getStates(): array
-    {
-        return $this->states;
-    }
-
-    /**
-     * Returns the transition table for this automaton.
-     *
-     * @return array The transition table.
-     */
-    public function getTransitionTable(): array
-    {
-        return $this->transitionTable;
     }
 }

@@ -4,10 +4,13 @@ declare(strict_types=1);
 
 namespace Aop\LALR\Parser\LALR1\Analysis;
 
-final class AnalysisResult
+use Aop\LALR\Contract\AnalysisResultInterface;
+use Aop\LALR\Contract\AutomatonInterface;
+
+final class AnalysisResult implements AnalysisResultInterface
 {
     /**
-     * @var \Aop\LALR\Parser\LALR1\Analysis\Automaton
+     * @var \Aop\LALR\Contract\AutomatonInterface
      */
     private $automaton;
 
@@ -24,12 +27,12 @@ final class AnalysisResult
     /**
      * Constructor.
      *
-     * @param \Aop\LALR\Parser\LALR1\Analysis\Automaton $automaton Automaton.
-     * @param array $parseTable                                    The parse table.
-     * @param array $conflicts                                     An array of conflicts resolved during parse table
-     *                                                             construction.
+     * @param \Aop\LALR\Contract\AutomatonInterface $automaton Automaton.
+     * @param array $parseTable                                The parse table.
+     * @param array $conflicts                                 An array of conflicts resolved during parse table
+     *                                                         construction.
      */
-    public function __construct(Automaton $automaton, array $parseTable, array $conflicts)
+    public function __construct(AutomatonInterface $automaton, array $parseTable, array $conflicts)
     {
         $this->automaton         = $automaton;
         $this->parseTable        = $parseTable;
@@ -41,7 +44,7 @@ final class AnalysisResult
      *
      * @return \Aop\LALR\Parser\LALR1\Analysis\Automaton
      */
-    public function getAutomaton(): Automaton
+    public function getAutomaton(): AutomatonInterface
     {
         return $this->automaton;
     }

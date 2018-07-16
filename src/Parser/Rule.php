@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace Aop\LALR\Parser;
 
+use Aop\LALR\Contract\RuleInterface;
+
 /**
- * Represents a rule in a context-free grammar.
+ * Default implementation of \Aop\LALR\Contract\RuleInterface
  */
-final class Rule
+final class Rule implements RuleInterface
 {
     /**
      * @var int
@@ -49,9 +51,7 @@ final class Rule
     }
 
     /**
-     * Returns the number of this rule.
-     *
-     * @return int The number of this rule.
+     * {@inheritdoc}
      */
     public function getNumber(): int
     {
@@ -59,9 +59,7 @@ final class Rule
     }
 
     /**
-     * Returns the name of this rule.
-     *
-     * @return string The name of this rule.
+     * {@inheritdoc}
      */
     public function getName(): string
     {
@@ -69,9 +67,7 @@ final class Rule
     }
 
     /**
-     * Returns the components of this rule.
-     *
-     * @return string[] The components of this rule.
+     * {@inheritdoc}
      */
     public function getComponents(): array
     {
@@ -79,20 +75,31 @@ final class Rule
     }
 
     /**
-     * Returns a component at index $index or null
-     * if index is out of range.
-     *
-     * @param int $index The index.
-     *
-     * @return string|null The component at index $index.
+     * {@inheritdoc}
      */
-    public function getComponent($index): ?string
+    public function getComponent(int $index): ?string
     {
         if (!isset($this->components[$index])) {
             return null;
         }
 
         return $this->components[$index];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getCallback(): ?callable
+    {
+        return $this->callback;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getPrecedence(): ?int
+    {
+        return $this->precedence;
     }
 
     /**
@@ -103,24 +110,6 @@ final class Rule
     public function setCallback(callable $callback): void
     {
         $this->callback = $callback;
-    }
-
-    /**
-     * Gets the callback (the semantic value) of the rule.
-     */
-    public function getCallback(): ?callable
-    {
-        return $this->callback;
-    }
-
-    /**
-     * Get rule precedence.
-     *
-     * @return int|null
-     */
-    public function getPrecedence(): ?int
-    {
-        return $this->precedence;
     }
 
     /**
