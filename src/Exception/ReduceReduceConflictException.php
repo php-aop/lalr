@@ -1,16 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Aop\LALR\Exception;
 
-use Aop\LALR\Parser\LALR1\Analysis\Automaton;
-use Aop\LALR\Parser\Rule;
+use Aop\LALR\Contract\AutomatonInterface;
+use Aop\LALR\Contract\RuleInterface;
 
 class ReduceReduceConflictException extends ConflictException
 {
     /**
      * The exception message template.
      */
-    const MESSAGE = <<<EOT
+    private const MESSAGE = <<<EOT
 The grammar exhibits a reduce/reduce conflict on rules:
 
   %d. %s -> %s
@@ -23,12 +25,12 @@ vs:
 EOT;
 
     /**
-     * @var \Aop\LALR\Parser\Rule
+     * @var \Aop\LALR\Contract\RuleInterface
      */
     protected $firstRule;
 
     /**
-     * @var \Aop\LALR\Parser\Rule
+     * @var \Aop\LALR\Contract\RuleInterface
      */
     protected $secondRule;
 
@@ -40,13 +42,13 @@ EOT;
     /**
      * Constructor.
      *
-     * @param int $state                                           The number of the inadequate state.
-     * @param \Aop\LALR\Parser\Rule $firstRule                     The first conflicting grammar rule.
-     * @param \Aop\LALR\Parser\Rule $secondRule                    The second conflicting grammar rule.
-     * @param string $lookahead                                    The conflicting lookahead.
-     * @param \Aop\LALR\Parser\LALR1\Analysis\Automaton $automaton The faulty automaton.
+     * @param int $state                                       The number of the inadequate state.
+     * @param \Aop\LALR\Contract\RuleInterface $firstRule      The first conflicting grammar rule.
+     * @param \Aop\LALR\Contract\RuleInterface $secondRule     The second conflicting grammar rule.
+     * @param string $lookahead                                The conflicting lookahead.
+     * @param \Aop\LALR\Contract\AutomatonInterface $automaton The faulty automaton.
      */
-    public function __construct(int $state, Rule $firstRule, Rule $secondRule, string $lookahead, Automaton $automaton)
+    public function __construct(int $state, RuleInterface $firstRule, RuleInterface $secondRule, string $lookahead, AutomatonInterface $automaton)
     {
         $components1 = $firstRule->getComponents();
         $components2 = $secondRule->getComponents();
@@ -56,10 +58,10 @@ EOT;
                 self::MESSAGE,
                 $firstRule->getNumber(),
                 $firstRule->getName(),
-                empty($components1) ? '/* empty */' : implode(' ', $components1),
+                empty($components1) ? '\/* empty *\/' : implode(' ', $components1),
                 $secondRule->getNumber(),
                 $secondRule->getName(),
-                empty($components2) ? '/* empty */' : implode(' ', $components2),
+                empty($components2) ? '\/* empty *\/' : implode(' ', $components2),
                 $lookahead,
                 $state
             ),
@@ -75,9 +77,9 @@ EOT;
     /**
      * Returns the first conflicting rule.
      *
-     * @return \Aop\LALR\Parser\Rule The first conflicting rule.
+     * @return \Aop\LALR\Contract\RuleInterface The first conflicting rule.
      */
-    public function getFirstRule(): Rule
+    public function getFirstRule(): RuleInterface
     {
         return $this->firstRule;
     }
@@ -85,9 +87,9 @@ EOT;
     /**
      * Returns the second conflicting rule.
      *
-     * @return \Aop\LALR\Parser\Rule The second conflicting rule.
+     * @return \Aop\LALR\Contract\RuleInterface The second conflicting rule.
      */
-    public function getSecondRule(): Rule
+    public function getSecondRule(): RuleInterface
     {
         return $this->secondRule;
     }

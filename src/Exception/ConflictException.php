@@ -1,15 +1,24 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Aop\LALR\Exception;
 
-use Aop\LALR\Parser\LALR1\Analysis\Automaton;
+use Aop\LALR\Contract\AutomatonInterface;
 
-class ConflictException extends LogicException
+abstract class ConflictException extends LogicException
 {
+    /**
+     * @var int
+     */
     protected $stateNumber;
+
+    /**
+     * @var \Aop\LALR\Contract\AutomatonInterface
+     */
     protected $automaton;
 
-    public function __construct(string $message, int $stateNumber, Automaton $automaton)
+    public function __construct(string $message, int $stateNumber, AutomatonInterface $automaton)
     {
         parent::__construct($message);
 
@@ -30,9 +39,9 @@ class ConflictException extends LogicException
     /**
      * Returns the faulty automaton.
      *
-     * @return \Aop\LALR\Parser\LALR1\Analysis\Automaton
+     * @return \Aop\LALR\Contract\AutomatonInterface
      */
-    public function getAutomaton(): Automaton
+    public function getAutomaton(): AutomatonInterface
     {
         return $this->automaton;
     }

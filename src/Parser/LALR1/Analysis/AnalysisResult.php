@@ -7,6 +7,9 @@ namespace Aop\LALR\Parser\LALR1\Analysis;
 use Aop\LALR\Contract\AnalysisResultInterface;
 use Aop\LALR\Contract\AutomatonInterface;
 
+/**
+ * Analysis result for LALR(1) analyzer.
+ */
 final class AnalysisResult implements AnalysisResultInterface
 {
     /**

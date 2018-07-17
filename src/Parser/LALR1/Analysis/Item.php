@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Aop\LALR\Parser\LALR1\Analysis;
 
-use Aop\LALR\Parser\Rule;
+use Aop\LALR\Contract\RuleInterface;
 
 /**
  * A LALR(1) item.
@@ -31,7 +31,7 @@ use Aop\LALR\Parser\Rule;
 final class Item
 {
     /**
-     * @var \Aop\LALR\Parser\Rule
+     * @var \Aop\LALR\Contract\RuleInterface
      */
     private $rule;
 
@@ -53,10 +53,10 @@ final class Item
     /**
      * Constructor.
      *
-     * @param \Aop\LALR\Parser\Rule $rule The rule of this item.
-     * @param int $dotIndex               The index of the dot in this item.
+     * @param \Aop\LALR\Contract\RuleInterface $rule The rule of this item.
+     * @param int $dotIndex                          The index of the dot in this item.
      */
-    public function __construct(Rule $rule, int $dotIndex)
+    public function __construct(RuleInterface $rule, int $dotIndex)
     {
         $this->rule     = $rule;
         $this->dotIndex = $dotIndex;
@@ -93,9 +93,9 @@ final class Item
     /**
      * Returns the rule of this item.
      *
-     * @return \Aop\LALR\Parser\Rule The rule.
+     * @return \Aop\LALR\Contract\RuleInterface The rule.
      */
-    public function getRule(): Rule
+    public function getRule(): RuleInterface
     {
         return $this->rule;
     }

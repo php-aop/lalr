@@ -7,7 +7,7 @@ namespace Aop\LALR\Parser\LALR1\Analysis;
 use Aop\LALR\Contract\AutomatonInterface;
 
 /**
- * Default \Aop\LALR\Contract\AutomatonInterface implementation
+ * Automaton for LALR(1)
  */
 final class Automaton implements AutomatonInterface
 {

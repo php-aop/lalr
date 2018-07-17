@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Aop\LALR\Tests\Parser;
 
-use Aop\LALR\Parser\AbstractGrammar;
+use Aop\LALR\Contract\GrammarInterface;
 use Aop\LALR\Tests\Stubs\Parser\FooGrammar;
 use PHPUnit\Framework\TestCase;
 
@@ -36,7 +36,7 @@ final class GrammarTest extends TestCase
      */
     public function theGrammarShouldBeAugmentedWithAStartRule(): void
     {
-        $this->assertEquals(AbstractGrammar::START, $this->grammar->getStartRule()->getName());
+        $this->assertEquals(GrammarInterface::START, $this->grammar->getStartRule()->getName());
         $this->assertEquals(['Foo'], $this->grammar->getStartRule()->getComponents());
     }
 

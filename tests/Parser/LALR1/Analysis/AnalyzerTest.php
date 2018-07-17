@@ -14,16 +14,6 @@ use PHPUnit\Framework\TestCase;
 final class AnalyzerTest extends TestCase
 {
     /**
-     * @var \Aop\LALR\Parser\LALR1\Analysis\Analyzer
-     */
-    private $analyzer;
-
-    public function setUp(): void
-    {
-        $this->analyzer = new Analyzer();
-    }
-
-    /**
      * @test
      */
     public function automatonShouldBeCorrectlyBuilt(): void
@@ -186,6 +176,6 @@ final class AnalyzerTest extends TestCase
 
     private function getAnalysisResult(Grammar $grammar): AnalysisResult
     {
-        return $this->analyzer->analyze($grammar);
+        return Analyzer::getInstance()->analyze($grammar);
     }
 }

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Aop\LALR\Parser\LALR1\Analysis;
+namespace Aop\LALR\Utils;
 
 final class Queue extends \SplQueue
 {

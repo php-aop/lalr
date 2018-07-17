@@ -1,16 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Aop\LALR\Exception;
 
-use Aop\LALR\Parser\LALR1\Analysis\Automaton;
-use Aop\LALR\Parser\Rule;
+use Aop\LALR\Contract\AutomatonInterface;
+use Aop\LALR\Contract\RuleInterface;
 
 class ShiftReduceConflictException extends ConflictException
 {
     /**
      * The exception message template.
      */
-    const MESSAGE = <<<EOT
+    private const MESSAGE = <<<EOT
 The grammar exhibits a shift/reduce conflict on rule:
 
   %d. %s -> %s
@@ -19,7 +21,7 @@ The grammar exhibits a shift/reduce conflict on rule:
 EOT;
 
     /**
-     * @var \Aop\LALR\Parser\Rule
+     * @var \Aop\LALR\Contract\RuleInterface
      */
     protected $rule;
 
@@ -31,11 +33,12 @@ EOT;
     /**
      * Constructor.
      *
-     * @param \Aop\LALR\Parser\Rule $rule The conflicting grammar rule.
-     * @param string $lookahead The conflicting lookahead to shift.
-     * @param \Aop\LALR\Parser\LALR1\Analysis\Automaton $automaton The faulty automaton.
+     * @param string $state                                    State.
+     * @param \Aop\LALR\Contract\RuleInterface $rule           The conflicting grammar rule.
+     * @param string $lookahead                                The conflicting lookahead to shift.
+     * @param \Aop\LALR\Contract\AutomatonInterface $automaton The faulty automaton.
      */
-    public function __construct($state, Rule $rule, string $lookahead, Automaton $automaton)
+    public function __construct(string $state, RuleInterface $rule, string $lookahead, AutomatonInterface $automaton)
     {
         $components = $rule->getComponents();
 
@@ -44,7 +47,7 @@ EOT;
                 self::MESSAGE,
                 $rule->getNumber(),
                 $rule->getName(),
-                empty($components) ? '/* empty */' : implode(' ', $components),
+                empty($components) ? '\/* empty *\/' : implode(' ', $components),
                 $lookahead,
                 $state
             ),
@@ -52,16 +55,16 @@ EOT;
             $automaton
         );
 
-        $this->rule = $rule;
+        $this->rule      = $rule;
         $this->lookahead = $lookahead;
     }
 
     /**
      * Returns the conflicting rule.
      *
-     * @return \Aop\LALR\Parser\Rule The conflicting rule.
+     * @return \Aop\LALR\Contract\RuleInterface The conflicting rule.
      */
-    public function getRule(): Rule
+    public function getRule(): RuleInterface
     {
         return $this->rule;
     }

@@ -4,63 +4,69 @@ declare(strict_types=1);
 
 namespace Aop\LALR\Parser\LALR1\Analysis;
 
-use Aop\LALR\Cache\ArrayCache;
-use Aop\LALR\Contract\CacheInterface;
+use Aop\LALR\Contract\AnalysisResultInterface;
+use Aop\LALR\Contract\AutomatonInterface;
+use Aop\LALR\Contract\GrammarInterface;
 use Aop\LALR\Contract\LexerInterface;
 use Aop\LALR\Exception\LogicException;
 use Aop\LALR\Exception\ReduceReduceConflictException;
 use Aop\LALR\Exception\ShiftReduceConflictException;
-use Aop\LALR\Parser\AbstractGrammar;
 
 use function Aop\LALR\Functions\has_diff;
 use function Aop\LALR\Functions\union;
+use Aop\LALR\Utils\Queue;
 
 /**
- * Performs a grammar analysis and returns
- * the result.
+ * Performs a grammar analysis and returns the result.
  */
 final class Analyzer
 {
-    /**
-     * @var \Aop\LALR\Contract\CacheInterface $cache
-     */
-    private $cache;
-
-    public function __construct(CacheInterface $cache = null)
+    private function __construct()
     {
-        $this->cache = $cache ?? new ArrayCache();
+        // noop
     }
 
     /**
      * Performs a grammar analysis.
      *
-     * @param \Aop\LALR\Parser\AbstractGrammar $grammar The grammar to analyse.
+     * @param \Aop\LALR\Contract\GrammarInterface $grammar The grammar to analyse.
      *
-     * @return \Aop\LALR\Parser\LALR1\Analysis\AnalysisResult The result of the analysis.
+     * @return \Aop\LALR\Contract\AnalysisResultInterface The result of the analysis.
      */
-    public function analyze(AbstractGrammar $grammar): AnalysisResult
+    public function analyze(GrammarInterface $grammar): AnalysisResultInterface
     {
-        if ($this->cache->has($grammar)) {
-            return $this->cache->get($grammar);
-        }
-
         $automaton                = $this->buildAutomaton($grammar);
         [$parseTable, $conflicts] = $this->buildParseTable($automaton, $grammar);
-        $result                   = new AnalysisResult($automaton, $parseTable, $conflicts);
 
-        $this->cache->set($grammar, $result);
+        return new AnalysisResult($automaton, $parseTable, $conflicts);
+    }
 
-        return $result;
+    /**
+     * Get singleton instance of analyzer.
+     *
+     * Analyzer behaves as a function, so there is no need to allow more than one instance.
+     *
+     * @return \Aop\LALR\Parser\LALR1\Analysis\Analyzer
+     */
+    public static function getInstance(): Analyzer
+    {
+        static $instance;
+
+        if (null === $instance) {
+            $instance = new Analyzer();
+        }
+
+        return $instance;
     }
 
     /**
      * Builds the handle-finding FSA from the grammar.
      *
-     * @param \Aop\LALR\Parser\AbstractGrammar $grammar The grammar.
+     * @param \Aop\LALR\Contract\GrammarInterface $grammar The grammar.
      *
-     * @return \Aop\LALR\Parser\LALR1\Analysis\Automaton The resulting automaton.
+     * @return \Aop\LALR\Contract\AutomatonInterface The resulting automaton.
      */
-    private function buildAutomaton(AbstractGrammar $grammar): Automaton
+    private function buildAutomaton(GrammarInterface $grammar): AutomatonInterface
     {
 
         $automaton       = new Automaton();                                 // the eventual automaton
@@ -111,7 +117,7 @@ final class Analyzer
 
                             $symbol = $firstSets[$unrecognizedComponent];
 
-                            if (!\in_array(AbstractGrammar::EPSILON, $symbol, true)) {
+                            if (!\in_array(GrammarInterface::EPSILON, $symbol, true)) {
                                 // if the component doesn't derive epsilon, merge FIRST sets and break
                                 $lookahead = union($lookahead, $symbol);
                                 break;
@@ -119,7 +125,7 @@ final class Analyzer
 
                             if ($index < (\count($unrecognizedComponents) - 1)) {
                                 // if more components ahead, remove epsilon
-                                unset($symbol[\array_search(AbstractGrammar::EPSILON, $symbol, true)]);
+                                unset($symbol[\array_search(GrammarInterface::EPSILON, $symbol, true)]);
                             }
 
                             // and continue the loop
@@ -135,8 +141,8 @@ final class Analyzer
                             $pump    = false;
                         }
 
-                        if ($shouldLookahead && \in_array(AbstractGrammar::EPSILON, $lookahead, true)) {
-                            unset($lookahead[\array_search(AbstractGrammar::EPSILON, $lookahead, true)]);
+                        if ($shouldLookahead && \in_array(GrammarInterface::EPSILON, $lookahead, true)) {
+                            unset($lookahead[\array_search(GrammarInterface::EPSILON, $lookahead, true)]);
                             $connect = true;
                         }
 
@@ -229,12 +235,12 @@ final class Analyzer
     /**
      * Encodes the handle-finding FSA as a LR parse table.
      *
-     * @param \Aop\LALR\Parser\LALR1\Analysis\Automaton $automaton
-     * @param \Aop\LALR\Parser\AbstractGrammar $grammar
+     * @param \Aop\LALR\Contract\AutomatonInterface $automaton
+     * @param \Aop\LALR\Contract\GrammarInterface $grammar
      *
      * @return array The parse table.
      */
-    private function buildParseTable(Automaton $automaton, AbstractGrammar $grammar): array
+    private function buildParseTable(AutomatonInterface $automaton, GrammarInterface $grammar): array
     {
         $conflictsMode = $grammar->getConflictsMode();
         $conflicts     = [];
@@ -259,6 +265,9 @@ final class Analyzer
             }
         }
 
+        /**
+         * @var \Aop\LALR\Parser\LALR1\Analysis\State $state
+         */
         foreach ($automaton->getStates() as $index => $state) {
 
             if (!isset($table['action'][$index])) {
@@ -288,7 +297,7 @@ final class Analyzer
 
                     if ($instruction > 0) {
 
-                        if ($conflictsMode & AbstractGrammar::OPERATORS) {
+                        if ($conflictsMode & GrammarInterface::OPERATORS) {
 
                             if ($grammar->hasOperator($token)) {
 
@@ -325,19 +334,19 @@ final class Analyzer
                                     // precedences are equal, let's turn to associativity
                                     $associativity = $operator->getAssociativity();
 
-                                    if (AbstractGrammar::RIGHT === $associativity) {
+                                    if (GrammarInterface::RIGHT === $associativity) {
                                         // if right-associative, shift (i.e. don't modify the table)
                                         continue;
                                     }
 
-                                    if (AbstractGrammar::LEFT === $associativity) {
+                                    if (GrammarInterface::LEFT === $associativity) {
                                         // if left-associative, reduce
                                         $table['action'][$index][$token] = -$ruleNumber;
 
                                         continue;
                                     }
 
-                                    if (AbstractGrammar::NONASSOCIATIVE === $associativity) {
+                                    if (GrammarInterface::NONASSOCIATIVE === $associativity) {
                                         // The token is nonassociative. This actually means an input error, so remove the
                                         // shift entry from the table and mark this as an explicit error entry
                                         unset($table['action'][$index][$token]);
@@ -353,13 +362,13 @@ final class Analyzer
                             }
                         }
 
-                        if ($conflictsMode & AbstractGrammar::SHIFT) {
+                        if ($conflictsMode & GrammarInterface::SHIFT) {
 
                             $conflicts[] = [
                                 'state'      => $index,
                                 'lookahead'  => $token,
                                 'rule'       => $item->getRule(),
-                                'resolution' => AbstractGrammar::SHIFT,
+                                'resolution' => GrammarInterface::SHIFT,
                             ];
 
                             continue;
@@ -376,7 +385,7 @@ final class Analyzer
                     $originalRule = $grammar->getRule(-$instruction);
                     $newRule      = $item->getRule();
 
-                    if ($conflictsMode & AbstractGrammar::LONGER_REDUCE) {
+                    if ($conflictsMode & GrammarInterface::LONGER_REDUCE) {
 
                         $countOriginalRuleComponents = \count($originalRule->getComponents());
                         $countNewRuleComponents      = \count($newRule->getComponents());
@@ -389,7 +398,7 @@ final class Analyzer
                                 'state'      => $index,
                                 'lookahead'  => $token,
                                 'rules'      => $resolvedRules,
-                                'resolution' => AbstractGrammar::LONGER_REDUCE,
+                                'resolution' => GrammarInterface::LONGER_REDUCE,
                             ];
 
                             continue;
@@ -404,14 +413,14 @@ final class Analyzer
                                 'state'      => $index,
                                 'lookahead'  => $token,
                                 'rules'      => $resolvedRules,
-                                'resolution' => AbstractGrammar::LONGER_REDUCE,
+                                'resolution' => GrammarInterface::LONGER_REDUCE,
                             ];
 
                             continue;
                         }
                     }
 
-                    if ($conflictsMode & AbstractGrammar::EARLIER_REDUCE) {
+                    if ($conflictsMode & GrammarInterface::EARLIER_REDUCE) {
 
                         if (-$instruction < $ruleNumber) { // original rule was earlier
 
@@ -421,7 +430,7 @@ final class Analyzer
                                 'state'      => $index,
                                 'lookahead'  => $token,
                                 'rules'      => $resolvedRules,
-                                'resolution' => AbstractGrammar::EARLIER_REDUCE,
+                                'resolution' => GrammarInterface::EARLIER_REDUCE,
                             ];
 
                             continue;
@@ -435,7 +444,7 @@ final class Analyzer
                             'state'      => $index,
                             'lookahead'  => $token,
                             'rules'      => $resolvedRules,
-                            'resolution' => AbstractGrammar::EARLIER_REDUCE,
+                            'resolution' => GrammarInterface::EARLIER_REDUCE,
                         ];
 
                         continue;
@@ -481,7 +490,7 @@ final class Analyzer
                     $symbols         = [];
 
                     if (0 === $countComponents) {
-                        $symbols = [AbstractGrammar::EPSILON];
+                        $symbols = [GrammarInterface::EPSILON];
                     }
 
                     if ($countComponents > 0) {
@@ -492,7 +501,7 @@ final class Analyzer
                                 // if nonterminal, copy its FIRST set to this rule's first set
                                 $ruleFirstSet = $firstSets[$component];
 
-                                if (!\in_array(AbstractGrammar::EPSILON, $ruleFirstSet, true)) {
+                                if (!\in_array(GrammarInterface::EPSILON, $ruleFirstSet, true)) {
                                     // if the component doesn't derive epsilon, merge the first sets and we're done
                                     $symbols = union($symbols, $ruleFirstSet);
                                     break;
@@ -500,7 +509,7 @@ final class Analyzer
 
                                 // if all components derive epsilon, the rule itself derives epsilon
                                 if ($index < ($countComponents - 1)) {
-                                    $epsilonPosition = \array_search(AbstractGrammar::EPSILON, $ruleFirstSet, true);
+                                    $epsilonPosition = \array_search(GrammarInterface::EPSILON, $ruleFirstSet, true);
                                     // more components ahead, remove epsilon
                                     unset($ruleFirstSet[$epsilonPosition]);
                                 }

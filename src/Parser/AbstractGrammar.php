@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Aop\LALR\Parser;
 
 use Aop\LALR\Contract\GrammarInterface;
+use Aop\LALR\Contract\OperatorInterface;
+use Aop\LALR\Contract\RuleInterface;
 use Aop\LALR\Exception\LogicException;
 use Aop\LALR\Exception\OutOfBoundsException;
 
@@ -13,72 +15,6 @@ use Aop\LALR\Exception\OutOfBoundsException;
  */
 abstract class AbstractGrammar implements GrammarInterface
 {
-    /**
-     * The name given to the rule the grammar is augmented with
-     * when start() is called.
-     */
-    public const START = '$start';
-
-    /**
-     * The epsilon symbol signifies an empty production.
-     */
-    public const EPSILON = '$epsilon';
-
-    /**
-     * Signifies that the parser should not resolve any
-     * grammar conflicts.
-     */
-    public const NONE = 0;
-
-    /**
-     * Signifies that the parser should resolve
-     * shift/reduce conflicts by always shifting.
-     */
-    public const SHIFT = 1;
-
-    /**
-     * Signifies that the parser should resolve
-     * reduce/reduce conflicts by reducing with
-     * the longer rule.
-     */
-    public const LONGER_REDUCE = 2;
-
-    /**
-     * Signifies that the parser should resolve
-     * reduce/reduce conflicts by reducing
-     * with the rule that was given earlier in
-     * the grammar.
-     */
-    public const EARLIER_REDUCE = 4;
-
-    /**
-     * Signifies that the conflicts should be
-     * resolved by taking operator precedence
-     * into account.
-     */
-    public const OPERATORS = 8;
-
-    /**
-     * Signifies that the parser should automatically
-     * resolve all grammar conflicts.
-     */
-    public const ALL = 15;
-
-    /**
-     * Left operator associativity.
-     */
-    public const LEFT = 0;
-
-    /**
-     * Right operator associativity.
-     */
-    public const RIGHT = 1;
-
-    /**
-     * The operator is nonassociative.
-     */
-    public const NONASSOCIATIVE = 2;
-
     /**
      * @var \Aop\LALR\Parser\Rule[]
      */
@@ -120,9 +56,7 @@ abstract class AbstractGrammar implements GrammarInterface
     protected $currentOperators;
 
     /**
-     * Returns the set of rules of this grammar.
-     *
-     * @return \Aop\LALR\Parser\Rule[] The rules.
+     * {@inheritdoc}
      */
     public function getRules(): array
     {
@@ -130,15 +64,9 @@ abstract class AbstractGrammar implements GrammarInterface
     }
 
     /**
-     * Get rule by its number.
-     *
-     * @param int $number Rule number
-     *
-     * @return \Aop\LALR\Parser\Rule
-     *
-     * @throws \Aop\LALR\Exception\OutOfBoundsException
+     * {@inheritdoc}
      */
-    public function getRule(int $number): Rule
+    public function getRule(int $number): RuleInterface
     {
         if (isset($this->rules[$number])) {
             return $this->rules[$number];
@@ -148,9 +76,7 @@ abstract class AbstractGrammar implements GrammarInterface
     }
 
     /**
-     * Returns rules grouped by nonterminal name.
-     *
-     * @return array The rules grouped by nonterminal name.
+     * {@inheritdoc}
      */
     public function getGroupedRules(): array
     {
@@ -158,11 +84,9 @@ abstract class AbstractGrammar implements GrammarInterface
     }
 
     /**
-     * Returns the augmented start rule. For internal use only.
-     *
-     * @return \Aop\LALR\Parser\Rule The start rule.
+     * {@inheritdoc}
      */
-    public function getStartRule(): Rule
+    public function getStartRule(): RuleInterface
     {
         if (!isset($this->rules[0])) {
             throw new LogicException('No start rule specified.');
@@ -172,9 +96,7 @@ abstract class AbstractGrammar implements GrammarInterface
     }
 
     /**
-     * Returns the conflict resolution mode for this grammar.
-     *
-     * @return int The bitmask of the resolution mode.
+     * {@inheritdoc}
      */
     public function getConflictsMode(): int
     {
@@ -182,11 +104,7 @@ abstract class AbstractGrammar implements GrammarInterface
     }
 
     /**
-     * Check if nonterminal exist in the grammar.
-     *
-     * @param string $name The name of the nonterminal.
-     *
-     * @return boolean TRUE if exists.
+     * {@inheritdoc}
      */
     public function hasNonterminal(string $name): bool
     {
@@ -194,11 +112,7 @@ abstract class AbstractGrammar implements GrammarInterface
     }
 
     /**
-     * Check if passed token is operator
-     *
-     * @param string $token The token type.
-     *
-     * @return boolean TRUE if token is operator.
+     * {@inheritdoc}
      */
     public function hasOperator(string $token): bool
     {
@@ -206,13 +120,9 @@ abstract class AbstractGrammar implements GrammarInterface
     }
 
     /**
-     * Get operator.
-     *
-     * @param string $token
-     *
-     * @return \Aop\LALR\Parser\Operator
+     * {@inheritdoc}
      */
-    public function getOperator(string $token): Operator
+    public function getOperator(string $token): OperatorInterface
     {
         return $this->operators[$token];
     }

@@ -61,27 +61,19 @@ final class Operator implements OperatorInterface
      * Set operator associativity.
      *
      * @param int $associativity
-     *
-     * @return \Aop\LALR\Parser\Operator Fluent interface.
      */
-    public function setAssociativity(int $associativity): Operator
+    public function setAssociativity(int $associativity): void
     {
         $this->associativity = $associativity;
-
-        return $this;
     }
 
     /**
      * Set operator precedence.
      *
      * @param int|null $precedence Precedence.
-     *
-     * @return \Aop\LALR\Parser\Operator Fluent interface.
      */
-    public function setPrecedence(?int $precedence): Operator
+    public function setPrecedence(?int $precedence): void
     {
         $this->precedence = $precedence;
-
-        return $this;
     }
 }
