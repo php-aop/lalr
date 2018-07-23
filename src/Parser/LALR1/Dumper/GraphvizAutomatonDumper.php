@@ -5,8 +5,9 @@ declare(strict_types=1);
 namespace Parser\LALR1\Dumper;
 
 use Aop\LALR\Contract\AutomatonDumperInterface;
-use Aop\LALR\Contract\AutomatonInterface;
-use Aop\LALR\Parser\LALR1\Analysis\Automaton;
+use Aop\LALR\Contract\GrammarInterface;
+use Aop\LALR\Exception\RuntimeException;
+use Aop\LALR\Parser\LALR1\Analysis\Analyzer;
 use Aop\LALR\Parser\LALR1\Analysis\Item;
 use Aop\LALR\Parser\LALR1\Analysis\State;
 use Aop\LALR\Utils\StringBuffer;
@@ -26,12 +27,8 @@ final class GraphvizAutomatonDumper implements AutomatonDumperInterface
     /**
      * {@inheritdoc}
      */
-    public function supports(AutomatonInterface $automaton, string $format): bool
+    public function supports(string $format): bool
     {
-        if (!$automaton instanceof Automaton) {
-            return false;
-        }
-
         if (!\in_array($format, self::FORMAT, true)) {
             return false;
         }
@@ -42,9 +39,15 @@ final class GraphvizAutomatonDumper implements AutomatonDumperInterface
     /**
      * {@inheritdoc}
      */
-    public function dump(AutomatonInterface $automaton): string
+    public function dump(GrammarInterface $grammar, string $format): string
     {
-        $buffer = StringBuffer::create();
+        if (!\in_array($format, self::FORMAT, true)) {
+            throw new RuntimeException(sprintf('Unsupported format "%s".', $format));
+        }
+
+        $buffer    = StringBuffer::create();
+        $analyzer  = Analyzer::getInstance();
+        $automaton = $analyzer->analyze($grammar)->getAutomaton();
 
         $this->header($buffer);
         $buffer->writeln();
@@ -128,7 +131,7 @@ final class GraphvizAutomatonDumper implements AutomatonDumperInterface
         return $string;
     }
 
-    protected function footer(StringBuffer $buffer): void
+    private function footer(StringBuffer $buffer): void
     {
         $buffer->writeln('}');
     }
