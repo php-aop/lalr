@@ -2,10 +2,9 @@
 
 namespace Aop\LALR\Console;
 
-use Aop\LALR\Command\ExportParseTableCommand;
+use Aop\LALR\Command\DumpAutomatonCommand;
 use Symfony\Component\Console\Application as Base;
 use Symfony\Component\Console\Input\InputDefinition;
-use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 
 final class Application extends Base
@@ -15,20 +14,15 @@ final class Application extends Base
         parent::__construct('LALR', $version);
     }
 
-    protected function getCommandName(InputInterface $input)
+    protected function getDefaultCommands(): array
     {
-        return 'dissect';
+        $defaults   = parent::getDefaultCommands();
+        $defaults[] = new DumpAutomatonCommand();
+
+        return $defaults;
     }
 
-    protected function getDefaultCommands()
-    {
-        $default   = parent::getDefaultCommands();
-        $default[] = new ExportParseTableCommand();
-
-        return $default;
-    }
-
-    public function getDefinition()
+    public function getDefinition(): InputDefinition
     {
         return new InputDefinition([
             new InputOption('--help', '-h', InputOption::VALUE_NONE, 'Display this help message.'),
