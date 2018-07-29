@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Aop\LALR\Parser\LALR1;
 
+use Aop\LALR\Contract\AnalyzerCacheInterface;
 use Aop\LALR\Contract\GrammarInterface;
 use Aop\LALR\Contract\ParserInterface;
 use Aop\LALR\Exception\UnexpectedTokenException;
@@ -21,19 +22,33 @@ final class Parser implements ParserInterface
     private $grammar;
 
     /**
-     * @var array
+     * @var \Aop\LALR\Contract\AnalysisResultInterface
      */
-    private $table;
+    private $analysisResult;
 
     /**
      * Constructor.
      *
      * @param \Aop\LALR\Contract\GrammarInterface $grammar The grammar.
      */
-    public function __construct(GrammarInterface $grammar)
+    public function __construct(GrammarInterface $grammar, AnalyzerCacheInterface $cache = null)
     {
         $this->grammar = $grammar;
-        $this->table   = Analyzer::getInstance()->analyze($grammar)->getParseTable();
+
+        if (null === $cache) {
+            $this->analysisResult = Analyzer::getInstance()->analyze($grammar);
+
+            return;
+        }
+
+        if ($cache->has($grammar)) {
+            $this->analysisResult = $cache->get($grammar);
+
+            return;
+        }
+
+        $this->analysisResult = Analyzer::getInstance()->analyze($grammar);
+        $cache->set($grammar, $this->analysisResult);
     }
 
     /**
@@ -44,6 +59,7 @@ final class Parser implements ParserInterface
         $currentState = 0;
         $stateStack   = [$currentState];
         $args         = [];
+        $table        = $this->analysisResult->getParseTable();
 
         /**
          * @var \Aop\LALR\Contract\TokenInterface $token
@@ -54,11 +70,11 @@ final class Parser implements ParserInterface
 
                 $type = $token->getType();
 
-                if (!isset($this->table['action'][$currentState][$type])) {
-                    throw new UnexpectedTokenException($token, array_keys($this->table['action'][$currentState]));
+                if (!isset($table['action'][$currentState][$type])) {
+                    throw new UnexpectedTokenException($token, array_keys($table['action'][$currentState]));
                 }
 
-                $action = $this->table['action'][$currentState][$type];
+                $action = $table['action'][$currentState][$type];
 
                 if ($action > 0) {
                     // shift
@@ -84,7 +100,7 @@ final class Parser implements ParserInterface
 
                     $args[]       = ($callback = $rule->getCallback()) ? \call_user_func_array($callback, $newArgs) : $newArgs[0];
                     $state        = $stateStack[\count($stateStack) - 1];
-                    $currentState = $this->table['goto'][$state][$rule->getName()];
+                    $currentState = $table['goto'][$state][$rule->getName()];
                     $stateStack[] = $currentState;
 
                     continue;

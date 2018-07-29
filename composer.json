@@ -11,15 +11,16 @@
         }
     ],
     "require": {
-        "php": ">=7.1",
-        "psr/simple-cache": "^1.0"
+        "php": ">=7.1"
     },
     "require-dev": {
         "symfony/console": "^3.0|^4.0",
-        "phpunit/phpunit": "^7.0"
+        "phpunit/phpunit": "^7.0",
+        "psr/simple-cache": "^1.0"
     },
     "suggest": {
-        "symfony/console": "for the command-line tool"
+        "symfony/console": "for the command-line tool",
+        "psr/simple-cache": "caching"
     },
     
     "bin": ["bin/lalr.php", "bin/lalr"],
