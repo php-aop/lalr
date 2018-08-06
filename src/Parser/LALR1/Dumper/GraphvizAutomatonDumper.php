@@ -7,6 +7,7 @@ namespace Parser\LALR1\Dumper;
 use Aop\LALR\Contract\AutomatonDumperInterface;
 use Aop\LALR\Contract\GrammarInterface;
 use Aop\LALR\Exception\RuntimeException;
+use Aop\LALR\Parser\AbstractGrammar;
 use Aop\LALR\Parser\LALR1\Analysis\Analyzer;
 use Aop\LALR\Parser\LALR1\Analysis\Item;
 use Aop\LALR\Parser\LALR1\Analysis\State;
@@ -27,9 +28,13 @@ final class GraphvizAutomatonDumper implements AutomatonDumperInterface
     /**
      * {@inheritdoc}
      */
-    public function supports(string $format): bool
+    public function supports(GrammarInterface $grammar, string $format): bool
     {
         if (!\in_array($format, self::FORMAT, true)) {
+            return false;
+        }
+
+        if (!$grammar instanceof AbstractGrammar) {
             return false;
         }
 

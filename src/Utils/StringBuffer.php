@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Aop\LALR\Utils;
 
 /**
- * A string writer.
+ * A string buffer.
  */
 final class StringBuffer
 {

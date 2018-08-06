@@ -29,7 +29,8 @@ final class Parser implements ParserInterface
     /**
      * Constructor.
      *
-     * @param \Aop\LALR\Contract\GrammarInterface $grammar The grammar.
+     * @param \Aop\LALR\Contract\GrammarInterface $grammar     The grammar.
+     * @param \Aop\LALR\Contract\AnalyzerCacheInterface $cache Analysis cache.
      */
     public function __construct(GrammarInterface $grammar, AnalyzerCacheInterface $cache = null)
     {

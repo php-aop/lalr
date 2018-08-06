@@ -61,7 +61,7 @@ EOT
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $class = strtr($input->getArgument('grammar-class'), '/', '\\');
+        $class = \str_replace('/', '\\', $input->getArgument('grammar-class'));
         $io    = new SymfonyStyle($input, $output);
 
         $io->title(sprintf('Dumping automaton for grammar "%s".', $class));
@@ -85,7 +85,7 @@ EOT
 
         foreach ($this->dumpers as $candidate) {
 
-            if ($candidate->supports($format)) {
+            if ($candidate->supports($grammar, $format)) {
                 $dumper = $candidate;
                 break;
             }
