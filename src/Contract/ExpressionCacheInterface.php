@@ -21,6 +21,8 @@ interface ExpressionCacheInterface
      * @param string $expression
      *
      * @return mixed|\Aop\LALR\Contract\NodeInterface Parsing result.
+     *
+     * @throws \Aop\LALR\Exception\RuntimeException If there is no cache.
      */
     public function get(string $expression);
 
