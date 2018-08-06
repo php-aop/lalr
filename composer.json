@@ -1,5 +1,5 @@
 {
-    "name": "aop/lalr",
+    "name": "php-aop/lalr",
     "description": "Lexing and parsing in pure PHP using LALR(1) parser",
     "keywords": ["lexing", "parsing", "ast", "parser"],
     "homepage": "https://github.com/php-aop/lalr",
@@ -22,8 +22,6 @@
         "symfony/console": "for the command-line tool",
         "psr/simple-cache": "caching"
     },
-    
-    "bin": ["bin/lalr.php", "bin/lalr"],
     "autoload": {
         "files": [
             "src/Functions/has_diff.php",
